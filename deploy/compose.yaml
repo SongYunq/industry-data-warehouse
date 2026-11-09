@@ -1,0 +1,101 @@
+name: industry-data-warehouse
+
+services:
+  doris-fe:
+    image: apache/doris:fe-4.0.8
+    hostname: doris-fe
+    environment:
+      FE_SERVERS: "fe1:172.30.0.10:9010"
+      FE_ID: "1"
+    ports:
+      - "127.0.0.1:${DORIS_FE_HTTP_PORT:-8030}:8030"
+      - "127.0.0.1:${DORIS_QUERY_PORT:-9030}:9030"
+    volumes:
+      - doris_fe_meta:/opt/apache-doris/fe/doris-meta
+      - doris_fe_log:/opt/apache-doris/fe/log
+    networks:
+      dw_internal:
+        ipv4_address: 172.30.0.10
+    restart: unless-stopped
+
+  doris-be:
+    image: apache/doris:be-4.0.8
+    hostname: doris-be
+    depends_on:
+      - doris-fe
+    environment:
+      FE_SERVERS: "fe1:172.30.0.10:9010"
+      BE_ADDR: "172.30.0.11:9050"
+      SKIP_CHECK_ULIMIT: "true"
+    ports:
+      - "127.0.0.1:${DORIS_BE_HTTP_PORT:-8040}:8040"
+    volumes:
+      - doris_be_storage:/opt/apache-doris/be/storage
+      - doris_be_log:/opt/apache-doris/be/log
+    networks:
+      dw_internal:
+        ipv4_address: 172.30.0.11
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18.6
+    hostname: postgres
+    environment:
+      POSTGRES_DB: "${MB_DB_DBNAME:-metabase_app}"
+      POSTGRES_USER: "${MB_DB_USER:-metabase}"
+      POSTGRES_PASSWORD: "${MB_DB_PASS:-metabase_local_dev_pwd}"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      dw_internal:
+        ipv4_address: 172.30.0.12
+    restart: unless-stopped
+
+  metabase:
+    image: metabase/metabase:v0.64.4
+    hostname: metabase
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      MB_DB_TYPE: "${MB_DB_TYPE:-postgres}"
+      MB_DB_HOST: "${MB_DB_HOST:-postgres}"
+      MB_DB_PORT: "${MB_DB_PORT:-5432}"
+      MB_DB_DBNAME: "${MB_DB_DBNAME:-metabase_app}"
+      MB_DB_USER: "${MB_DB_USER:-metabase}"
+      MB_DB_PASS: "${MB_DB_PASS:-metabase_local_dev_pwd}"
+      MB_JETTY_HOST: "0.0.0.0"
+      MB_JETTY_PORT: "3000"
+    ports:
+      - "127.0.0.1:${METABASE_PORT:-3000}:3000"
+    volumes:
+      - ./plugins/doris.metabase-driver-v1.0.0.jar:/plugins/doris.metabase-driver.jar:ro
+    networks:
+      dw_internal:
+        ipv4_address: 172.30.0.13
+    restart: unless-stopped
+
+volumes:
+  doris_fe_meta:
+    name: idw_doris_fe_meta
+  doris_fe_log:
+    name: idw_doris_fe_log
+  doris_be_storage:
+    name: idw_doris_be_storage
+  doris_be_log:
+    name: idw_doris_be_log
+  postgres_data:
+    name: idw_metabase_postgres_data
+
+networks:
+  dw_internal:
+    name: idw_internal_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
