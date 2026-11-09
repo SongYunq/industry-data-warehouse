@@ -1,0 +1,20 @@
+.DS_Store
+.pixi/
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.streamlit/secrets.toml
+
+# 运行时数据、暂存材料、批次清单与日志（保留目录占位文件）
+data/raw/*
+!data/raw/.gitkeep
+data/manifests/*
+!data/manifests/.gitkeep
+data/staging/*
+!data/staging/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# 外部下载的驱动大文件（保留目录与校验说明）
+deploy/plugins/*.jar
