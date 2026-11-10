@@ -1,6 +1,6 @@
 # Industry Data Warehouse
 
-最后更新：2026-11-09
+最后更新：2026-11-10
 
 面向国内快递末端揽派场景的数据仓库系统，以 `Cainiao-AI/LaDe` 为核心数据源，围绕履约与运力分析需求，完成从需求分析、数仓设计到数据处理和可视化分析的完整实践。
 
@@ -14,13 +14,13 @@
 
 ## 当前状态
 
-项目已完成 Apple 芯片 Mac 下的初次环境构建与单城市完整原始文件（`delivery/delivery_jl.csv`）接入验证（验收用例 `I01`—`I12` 全部通过）；正在推进其余数据子集探查、业务需求指标定版与完整数仓分层设计。
+项目已完成 Apple 芯片 Mac 下的初次环境构建与单城市完整原始文件（`delivery/delivery_jl.csv`）接入验证（验收用例 `I01`—`I12` 全部通过），并已将首份样本实测发现的真实字段特征（`order_id`、`delivery_time`、`ds`、派件表不含预约时间窗、`accept_gps_lng`/`lat` `"nan"` 文本缺失）统一校准至各阶段设计文档；正在推进其余数据子集探查、业务需求指标定版与完整数仓分层设计。
 
 - 已确定并验证（Mac 初次构建范围）：
   - 核心数据源：国内快递末端揽派数据集 `Cainiao-AI/LaDe`；已完成吉林派件文件 `delivery/delivery_jl.csv`（`4,736,342` 字节，`31,415` 条记录，17 列）下载校验、表头核验及 Doris `raw_lade.delivery_jl` 原始接入表 Stream Load 原子导入。
   - 环境与服务：Python `3.14.10` 本机开发使用 Pixi（`pixi.toml`、`pixi.lock` 已同时锁定 `osx-arm64` 与 `win-64`）；Docker Compose 统一编排 Apache Doris `4.0.8`（FE／BE）、Metabase `0.64.4`（加载 `velodb/metabase-doris-driver` `v1.0.0`）与独立 PostgreSQL `18.6`；Streamlit `1.67.0` 与 Metabase 本机连接及查询均已通过。
 - 尚未完成：
-  - 正式题目、具体业务指标计算口径、配套融合数据源尚未最终确认。
+  - 正式题目、揽收／轨迹子集探查、具体业务指标计算公式与配套融合数据源尚未最终确认。
   - 概念设计、逻辑设计（完整数仓分层模型）、完整业务物理表与 ETL 转换、正式可视化分析看板待开发。
   - Intel／AMD Windows 目标环境的独立部署验收（`W01`）待执行。
 
@@ -40,6 +40,13 @@
 
 - `README.md`：项目概况与入口。
 - `AGENTS.md`：后续协作时的文档维护约定。
+- `pixi.toml`、`pixi.lock`：跨平台依赖环境定义与 10 个标准 CLI 任务入口。
+- `.env.example`：环境变量配置模板（本地运行复制为 `.env`）。
+- `deploy/`：Docker Compose 编排文件（`compose.yaml`）与 Metabase Doris 驱动 SHA-256 校验文件。
+- `src/warehouse/`：服务编排、健康自检（`doctor`）、数据下载核验、建表与 Stream Load 导入对账核心模块。
+- `sql/bootstrap/`：原始接入层 Doris 建库建表 SQL 脚本（`001_raw_lade_delivery_jl.sql`）。
+- `apps/streamlit/`：本地 Streamlit 技术检查与样本抽样页（`app.py`）。
+- `data/`、`logs/`：本地原始数据、核验清单、临时加载材料与运行日志目录（内容已由 `.gitignore` 忽略）。
 - `docs/README.md`：文档索引、范围与更新规则。
 - `docs/00-工作内容与进度.md`：整体工作清单、状态与阶段记录。
 - `docs/01-技术栈与版本.md`：工具职责、选型状态、版本与连接适配。
@@ -47,4 +54,4 @@
 - `docs/12-数据源选取.md`：候选数据源比较与最终选型依据。
 - `docs/课程原始文档/`：课程原始要求、报告模板和答辩提纲。
 
-课程原始材料单独保存在 `docs/课程原始文档/`，项目编写的阶段文档保存在 `docs/`，具体入口见文档索引。运行命令将在完成环境搭建和验证后补入 [部署与运行](docs/10-部署与运行.md)。
+课程原始材料单独保存在 `docs/课程原始文档/`，项目编写的阶段文档保存在 `docs/`，具体入口见文档索引。完整运行命令与排障说明见 [部署与运行](docs/10-部署与运行.md)。
