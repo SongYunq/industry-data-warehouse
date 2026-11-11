@@ -33,10 +33,33 @@ REQUIRED_ENV_KEYS: tuple[str, ...] = (
     "MB_DB_DBNAME",
     "MB_DB_USER",
     "MB_DB_PASS",
+    "MB_ADMIN_EMAIL",
+    "MB_ADMIN_PASS",
 )
 
 # 允许为空字符串但键本身必须声明的配置项（如本地默认无密码的 Doris root）
 ALLOW_EMPTY_ENV_KEYS: frozenset[str] = frozenset({"DORIS_PASSWORD"})
+
+DEFAULT_LADE_BASE_URL = "https://huggingface.co/datasets/Cainiao-AI/LaDe/resolve/main"
+DEFAULT_LADE_DATASET_FILES: tuple[str, ...] = (
+    "delivery/delivery_jl.csv",
+    "delivery/delivery_yt.csv",
+    "delivery/delivery_cq.csv",
+    "delivery/delivery_sh.csv",
+    "delivery/delivery_hz.csv",
+    "pickup/pickup_jl.csv",
+    "pickup/pickup_yt.csv",
+    "pickup/pickup_cq.csv",
+    "pickup/pickup_sh.csv",
+    "pickup/pickup_hz.csv",
+    "road-network/roads.csv",
+    "delivery_five_cities.csv",
+    "pickup_five_cities.csv",
+    "courier_detailed_trajectory.zip",
+    "data_with_trajectory_20s/delivery_five_cities.pkl.xz",
+    "data_with_trajectory_20s/pickup_five_cities.pkl.xz",
+    "data_with_trajectory_20s/courier_detailed_trajectory_20s.pkl.xz",
+)
 
 
 class SecretRedactingFilter(logging.Filter):
@@ -82,8 +105,11 @@ class Settings:
     compose_file: Path
     bootstrap_sql_dir: Path
 
+    lade_base_url: str
     lade_source_url: str
     lade_default_file: str
+    lade_dataset_files: tuple[str, ...]
+    lade_download_timeout: int
 
     doris_host: str
     doris_query_port: int
@@ -107,6 +133,8 @@ class Settings:
     mb_db_dbname: str
     mb_db_user: str
     mb_db_pass: str
+    mb_admin_email: str
+    mb_admin_pass: str
 
     missing_env_keys: tuple[str, ...]
 
@@ -148,6 +176,16 @@ def load_settings(
             missing.append(name)
             return default
 
+    raw_dataset_files = os.environ.get("LADE_DATASET_FILES", "").strip()
+    if raw_dataset_files:
+        parsed_dataset_files = tuple(
+            item.strip().lstrip("/")
+            for item in raw_dataset_files.split(",")
+            if item.strip()
+        )
+    else:
+        parsed_dataset_files = DEFAULT_LADE_DATASET_FILES
+
     return Settings(
         project_root=PROJECT_ROOT,
         env_file=target_env,
@@ -158,13 +196,18 @@ def load_settings(
         plugins_dir=PROJECT_ROOT / "deploy" / "plugins",
         compose_file=PROJECT_ROOT / "deploy" / "compose.yaml",
         bootstrap_sql_dir=PROJECT_ROOT / "sql" / "bootstrap",
+        lade_base_url=os.environ.get(
+            "LADE_BASE_URL", DEFAULT_LADE_BASE_URL
+        ).strip().rstrip("/"),
         lade_source_url=os.environ.get(
             "LADE_SOURCE_URL",
-            "https://huggingface.co/datasets/Cainiao-AI/LaDe/resolve/main/delivery/delivery_jl.csv",
+            f"{DEFAULT_LADE_BASE_URL}/delivery/delivery_jl.csv",
         ).strip(),
         lade_default_file=os.environ.get(
             "LADE_DEFAULT_FILE", "delivery/delivery_jl.csv"
         ).strip(),
+        lade_dataset_files=parsed_dataset_files,
+        lade_download_timeout=_int_env("LADE_DOWNLOAD_TIMEOUT", 120),
         doris_host=os.environ.get("DORIS_HOST", "127.0.0.1").strip(),
         doris_query_port=_int_env("DORIS_QUERY_PORT", 9030),
         doris_fe_http_port=_int_env("DORIS_FE_HTTP_PORT", 8030),
@@ -187,6 +230,8 @@ def load_settings(
         mb_db_dbname=os.environ.get("MB_DB_DBNAME", "metabase_app").strip(),
         mb_db_user=os.environ.get("MB_DB_USER", "metabase").strip(),
         mb_db_pass=os.environ.get("MB_DB_PASS", ""),
+        mb_admin_email=os.environ.get("MB_ADMIN_EMAIL", "").strip(),
+        mb_admin_pass=os.environ.get("MB_ADMIN_PASS", "").strip(),
         missing_env_keys=tuple(dict.fromkeys(missing)),
     )
 
@@ -219,7 +264,7 @@ def setup_task_logger(task_name: str, settings: Settings) -> tuple[logging.Logge
     logger.propagate = False
 
     redact_filter = SecretRedactingFilter(
-        [settings.doris_password, settings.mb_db_pass]
+        [settings.doris_password, settings.mb_db_pass, settings.mb_admin_pass]
     )
     formatter = logging.Formatter(
         fmt="%(asctime)s [%(levelname)s] %(message)s",

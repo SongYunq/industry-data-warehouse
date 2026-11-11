@@ -1,6 +1,6 @@
 # Industry Data Warehouse
 
-最后更新：2026-11-10
+最后更新：2026-11-11
 
 面向国内快递末端揽派场景的数据仓库系统，以 `Cainiao-AI/LaDe` 为核心数据源，围绕履约与运力分析需求，完成从需求分析、数仓设计到数据处理和可视化分析的完整实践。
 
@@ -14,13 +14,13 @@
 
 ## 当前状态
 
-项目已完成 Apple 芯片 Mac 下的初次环境构建与单城市完整原始文件（`delivery/delivery_jl.csv`）接入验证（验收用例 `I01`—`I12` 全部通过），并已将首份样本实测发现的真实字段特征（`order_id`、`delivery_time`、`ds`、派件表不含预约时间窗、`accept_gps_lng`/`lat` `"nan"` 文本缺失）统一校准至各阶段设计文档；正在推进其余数据子集探查、业务需求指标定版与完整数仓分层设计。
+项目已完成 Apple 芯片 Mac 下的初次环境构建、官方仓库全部 17 份数据文件（`2.68 GiB`）落盘校验、全部 13 份 CSV/TSV 格式探查及吉林派件文件（`delivery/delivery_jl.csv`）Doris 接入验证（用例 `I01`—`I17` 全部通过），并已将全量实测发现（三套异构数据体系 A/B/C 边界、体系 A 内派件与揽收子集独立编码空间、揽收时间窗三项口径与定位缺失率、官方 `2022` 年份依据、`roads.csv` `\t` 分隔符等）及代码加固（`P02`—`P06`）同步至代码与各阶段设计文档；正在推进跨子集入库范围确定、业务需求指标定版与完整数仓分层设计。
 
-- 已确定并验证（Mac 初次构建范围）：
-  - 核心数据源：国内快递末端揽派数据集 `Cainiao-AI/LaDe`；已完成吉林派件文件 `delivery/delivery_jl.csv`（`4,736,342` 字节，`31,415` 条记录，17 列）下载校验、表头核验及 Doris `raw_lade.delivery_jl` 原始接入表 Stream Load 原子导入。
+- 已确定并验证（Mac 初次构建与全量文件探查范围）：
+  - 核心数据源：国内快递末端揽派数据集 `Cainiao-AI/LaDe`；已完成官方仓库全部 17 份数据文件（合计 `2,880,365,177` 字节，约 `2.68 GiB`）下载至 `data/raw/` 对应目录并通过 SHA-256 校验，完成全部 13 份 CSV/TSV 文件（含 `\t` 分隔的 `road-network/roads.csv`）的表头与质量核验（清单位于 `data/manifests/inspections/`），明确区分体系 A（五城 2022 年 5—10 月揽派主表，共 `10,650,808` 行）、体系 B（3—4 月轨迹研究配套子集）与体系 C（路网表）；其中吉林派件文件 `delivery/delivery_jl.csv`（`31,415` 条记录，17 列）已原子导入 Doris `raw_lade.delivery_jl`（其余 16 份文件暂未入 Doris）。
   - 环境与服务：Python `3.14.10` 本机开发使用 Pixi（`pixi.toml`、`pixi.lock` 已同时锁定 `osx-arm64` 与 `win-64`）；Docker Compose 统一编排 Apache Doris `4.0.8`（FE／BE）、Metabase `0.64.4`（加载 `velodb/metabase-doris-driver` `v1.0.0`）与独立 PostgreSQL `18.6`；Streamlit `1.67.0` 与 Metabase 本机连接及查询均已通过。
 - 尚未完成：
-  - 正式题目、揽收／轨迹子集探查、具体业务指标计算公式与配套融合数据源尚未最终确认。
+  - 正式题目、除 `delivery_jl.csv` 外其余子集的入库范围与关联方案、具体业务指标计算公式与配套外部数据源尚未最终确认。
   - 概念设计、逻辑设计（完整数仓分层模型）、完整业务物理表与 ETL 转换、正式可视化分析看板待开发。
   - Intel／AMD Windows 目标环境的独立部署验收（`W01`）待执行。
 
@@ -40,7 +40,7 @@
 
 - `README.md`：项目概况与入口。
 - `AGENTS.md`：后续协作时的文档维护约定。
-- `pixi.toml`、`pixi.lock`：跨平台依赖环境定义与 10 个标准 CLI 任务入口。
+- `pixi.toml`、`pixi.lock`：跨平台依赖环境定义与 11 个标准 CLI 任务入口（含 `data-fetch-all` 全量数据获取任务）。
 - `.env.example`：环境变量配置模板（本地运行复制为 `.env`）。
 - `deploy/`：Docker Compose 编排文件（`compose.yaml`）与 Metabase Doris 驱动 SHA-256 校验文件。
 - `src/warehouse/`：服务编排、健康自检（`doctor`）、数据下载核验、建表与 Stream Load 导入对账核心模块。

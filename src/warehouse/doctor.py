@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import platform
 import subprocess
 import sys
 import time
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -97,7 +99,10 @@ def _check_docker_containers(
 
 
 def _check_metabase_ready(
-    settings: Settings, logger: logging.Logger, timeout_sec: int = 150
+    settings: Settings,
+    logger: logging.Logger,
+    timeout_sec: int = 150,
+    allow_bootstrap: bool = False,
 ) -> bool:
     health_url = f"http://{settings.metabase_host}:{settings.metabase_port}/api/health"
     deadline = time.monotonic() + timeout_sec
@@ -142,16 +147,82 @@ def _check_metabase_ready(
     else:
         logger.warning("Metabase 日志中暂未检索到 doris 关键字，请进一步核验插件目录。")
 
-    return _verify_metabase_doris_connection(settings, logger)
+    return _verify_metabase_doris_connection(
+        settings, logger, allow_bootstrap=allow_bootstrap
+    )
+
+
+def _extract_target_table_fields(
+    meta_payload: dict[str, Any], target_table: str
+) -> list[str] | None:
+    tables = meta_payload.get("tables") or []
+    target_tbl = next(
+        (t for t in tables if t.get("name") == target_table),
+        None,
+    )
+    if not target_tbl:
+        return None
+    fields = target_tbl.get("fields") or []
+    if not fields:
+        return None
+    return [str(f.get("name", "")) for f in fields if f.get("name")]
+
+
+def _target_table_exists_in_doris(settings: Settings) -> bool:
+    """查询 Doris 目标数据库中是否已创建目标表。"""
+    try:
+        from warehouse.db import connect_doris
+
+        with connect_doris(settings, database=settings.doris_database) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SHOW TABLES LIKE %s", (settings.doris_table,))
+                rows = list(cur.fetchall())
+                for r in rows:
+                    if isinstance(r, dict) and settings.doris_table in [
+                        str(v) for v in r.values()
+                    ]:
+                        return True
+                    if isinstance(r, (list, tuple)) and settings.doris_table in [
+                        str(v) for v in r
+                    ]:
+                        return True
+    except Exception:  # noqa: BLE001
+        return False
+    return False
+
+
+def _check_dir_writable_without_probe(
+    d: Path, allow_create: bool = False
+) -> bool:
+    """检查目录（或其最近已存在父目录）的读写执行权限，不写入临时探测文件。"""
+    if allow_create:
+        d.mkdir(parents=True, exist_ok=True)
+    target = d
+    while not target.exists() and target.parent != target:
+        target = target.parent
+    if not target.exists() or not target.is_dir():
+        return False
+    return os.access(target, os.R_OK | os.W_OK | os.X_OK)
 
 
 def _verify_metabase_doris_connection(
-    settings: Settings, logger: logging.Logger
+    settings: Settings,
+    logger: logging.Logger,
+    allow_bootstrap: bool = False,
 ) -> bool:
-    """通过 Metabase API 验证 :doris 驱动引擎注册、Doris 数据库连接、字段发现、原生查询及 PostgreSQL 落库 (I03)。"""
+    """通过 Metabase API 验证 :doris 驱动引擎注册、Doris 数据库连接、字段发现、原生查询及 PostgreSQL 落库 (I03)。
+
+    默认 (allow_bootstrap=False) 仅执行诊断检查，不创建管理员、不建库、不新增数据源或触发 schema 同步；
+    仅当显式指定 allow_bootstrap=True 时执行首次初始化引导（若此时尚未执行 db-init 建表，则不强制要求目标表已存在）。
+    """
     base_url = f"http://{settings.metabase_host}:{settings.metabase_port}"
-    admin_email = "admin@lade.local"
-    admin_pass = "LadeDwAdmin2026!"
+    admin_email = getattr(settings, "mb_admin_email", "").strip()
+    admin_pass = getattr(settings, "mb_admin_pass", "").strip()
+    if not admin_email or not admin_pass:
+        logger.error(
+            "缺少 Metabase 管理员凭据配置 (MB_ADMIN_EMAIL / MB_ADMIN_PASS)，请在 .env 或环境变量中显式设置。"
+        )
+        return False
 
     with httpx.Client(trust_env=False, base_url=base_url, timeout=30.0) as client:
         props_resp = client.get("/api/session/properties")
@@ -162,7 +233,12 @@ def _verify_metabase_doris_connection(
         session_id: str | None = None
 
         if setup_token:
-            logger.info("首次初始化 Metabase 本地管理员账户与 Doris 数据源连接...")
+            if not allow_bootstrap:
+                logger.error(
+                    "Metabase 尚未完成首次初始化（存在 setup-token）。doctor 默认不自动创建管理员；请运行 `pixi run doctor --bootstrap` 或在浏览器完成初始化。"
+                )
+                return False
+            logger.info("首次引导初始化 Metabase 本地管理员账户 (--bootstrap)...")
             setup_payload = {
                 "token": setup_token,
                 "user": {
@@ -189,7 +265,7 @@ def _verify_metabase_doris_connection(
                 session_id = login_resp.json().get("id")
             else:
                 logger.error(
-                    "Metabase 登录失败 (HTTP %d): %s",
+                    "Metabase 登录失败 (HTTP %d，请检查 MB_ADMIN_EMAIL / MB_ADMIN_PASS 配置): %s",
                     login_resp.status_code,
                     login_resp.text[:200],
                 )
@@ -211,7 +287,7 @@ def _verify_metabase_doris_connection(
             engines["doris"].get("driver-name", "doris"),
         )
 
-        # 查找或创建 Doris 数据库连接
+        # 查找已配置的 Doris 数据库连接
         db_list_resp = client.get("/api/database", headers=headers)
         db_list_resp.raise_for_status()
         db_items = db_list_resp.json().get("data", [])
@@ -219,16 +295,21 @@ def _verify_metabase_doris_connection(
             (d for d in db_items if d.get("engine") == "doris"), None
         )
 
-        # 确保 Doris 中目标库已存在以便连接
-        from warehouse.db import connect_doris
-
-        with connect_doris(settings) as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    f"CREATE DATABASE IF NOT EXISTS `{settings.doris_database}`"
-                )
-
         if not doris_db:
+            if not allow_bootstrap:
+                logger.error(
+                    "Metabase 中尚未配置 Doris 数据源连接。doctor 默认不自动创建数据库或数据源；请运行 `pixi run doctor --bootstrap` 完成初始化。"
+                )
+                return False
+
+            from warehouse.db import connect_doris
+
+            with connect_doris(settings) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        f"CREATE DATABASE IF NOT EXISTS `{settings.doris_database}`"
+                    )
+
             create_db_payload = {
                 "name": f"Apache Doris ({settings.doris_database})",
                 "engine": "doris",
@@ -282,37 +363,61 @@ def _verify_metabase_doris_connection(
         rows = q_data.get("data", {}).get("rows", [])
         logger.info("Metabase -> Doris 原生 SQL 查询验证成功: rows=%s", rows)
 
-        # 若目标表已存在，触发 schema 同步并验证表与字段发现
-        client.post(f"/api/database/{db_id}/sync_schema", headers=headers)
-        for _ in range(10):
-            meta_resp = client.get(
-                f"/api/database/{db_id}/metadata", headers=headers
+        # 验证目标表与字段发现
+        field_names: list[str] | None = None
+        meta_resp = client.get(
+            f"/api/database/{db_id}/metadata", headers=headers
+        )
+        if meta_resp.status_code == 200:
+            field_names = _extract_target_table_fields(
+                meta_resp.json(), settings.doris_table
             )
-            if meta_resp.status_code == 200:
-                tables = meta_resp.json().get("tables", [])
-                target_tbl = next(
-                    (
-                        t
-                        for t in tables
-                        if t.get("name") == settings.doris_table
-                    ),
-                    None,
+
+        if not field_names and allow_bootstrap:
+            if not _target_table_exists_in_doris(settings):
+                logger.info(
+                    "Metabase 管理员账户、Doris 数据源连接与原生查询已完成引导初始化；目标表 %s.%s 尚未创建（请继续执行 db-init 建表，建表后可运行 doctor --bootstrap 同步表结构并执行 doctor 核验）。",
+                    settings.doris_database,
+                    settings.doris_table,
                 )
-                if target_tbl and target_tbl.get("fields"):
-                    field_names = [f.get("name") for f in target_tbl["fields"]]
-                    logger.info(
-                        "Metabase 表与字段发现验证成功: 表=%s, 发现字段数=%d (%s...)",
-                        settings.doris_table,
-                        len(field_names),
-                        field_names[:5],
+                return True
+
+            client.post(f"/api/database/{db_id}/sync_schema", headers=headers)
+            for _ in range(10):
+                time.sleep(2)
+                meta_resp = client.get(
+                    f"/api/database/{db_id}/metadata", headers=headers
+                )
+                if meta_resp.status_code == 200:
+                    field_names = _extract_target_table_fields(
+                        meta_resp.json(), settings.doris_table
                     )
-                    break
-            time.sleep(2)
+                    if field_names:
+                        break
+
+        if not field_names:
+            logger.error(
+                "Metabase 元数据中未能发现目标表 %s.%s 或其字段信息，表与字段发现检查未通过。",
+                settings.doris_database,
+                settings.doris_table,
+            )
+            return False
+
+        logger.info(
+            "Metabase 表与字段发现验证成功: 表=%s, 发现字段数=%d (%s...)",
+            settings.doris_table,
+            len(field_names),
+            field_names[:5],
+        )
 
     return True
 
 
-def run_doctor(settings: Settings, logger: logging.Logger) -> int:
+def run_doctor(
+    settings: Settings,
+    logger: logging.Logger,
+    allow_bootstrap: bool = False,
+) -> int:
     """执行完整环境、配置、端口安全与服务连接诊断。"""
     logger.info("=== 开始执行 Industry Data Warehouse 环境与连接检查 (doctor) ===")
     logger.info(
@@ -332,17 +437,20 @@ def run_doctor(settings: Settings, logger: logging.Logger) -> int:
     logger.info("配置变量检查通过（已显式读取 .env 且进程环境变量优先）。")
 
     try:
-        ensure_runtime_dirs(settings)
+        if allow_bootstrap:
+            ensure_runtime_dirs(settings)
         for label, d in (
             ("DATA_DIR", settings.data_dir),
             ("MANIFEST_DIR", settings.manifest_dir),
             ("STAGING_DIR", settings.staging_dir),
             ("LOG_DIR", settings.log_dir),
         ):
-            probe = d / ".write_probe"
-            probe.write_text("ok", encoding="utf-8")
-            probe.unlink(missing_ok=True)
-            logger.info("目录可写检查通过: %s -> %s", label, d)
+            if not _check_dir_writable_without_probe(
+                d, allow_create=allow_bootstrap
+            ):
+                logger.error("本地目录不可写或不存在: %s -> %s", label, d)
+                return 1
+            logger.info("目录权限检查通过: %s -> %s", label, d)
     except Exception as exc:  # noqa: BLE001
         logger.error("本地目录权限检查失败: %s", exc)
         return 1
@@ -424,7 +532,9 @@ def run_doctor(settings: Settings, logger: logging.Logger) -> int:
             return 1
 
     # 检查 Metabase 与驱动
-    if not _check_metabase_ready(settings, logger):
+    if not _check_metabase_ready(
+        settings, logger, allow_bootstrap=allow_bootstrap
+    ):
         return 1
 
     logger.info("=== 所有环境、配置、端口安全与服务连接检查 (doctor) 已全部通过 ===")
