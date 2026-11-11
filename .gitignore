@@ -18,3 +18,10 @@ logs/*
 
 # 外部下载的驱动大文件（保留目录与校验说明）
 deploy/plugins/*.jar
+# V2 原始数据为本地输入文件，不纳入代码提交
+data_v2/raw/*
+!data_v2/raw/.gitkeep
+data_v2/manifests/*
+!data_v2/manifests/.gitkeep
+data_v2/staging/*
+!data_v2/staging/.gitkeep
