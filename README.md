@@ -1,21 +1,21 @@
-# Inside Airbnb 城市短租数据仓库
+# H&M 快时尚零售数据仓库
 
 最后更新：2026-11-12（Asia/Shanghai）
 
-本项目围绕 Inside Airbnb 香港、东京和新加坡公开数据开展课程数据仓库设计。技术路线采用 Pixi + Python、Apache Doris、Streamlit、Metabase、PostgreSQL 与 Docker Compose。
+本项目围绕 Kaggle H&M Personalized Fashion Recommendations 竞赛数据建设课程数据仓库。技术路线为 Pixi + Python、Apache Doris、Streamlit、Metabase、PostgreSQL 与 Docker Compose。
 
 ## 当前进度
 
-数据源选取、三城近一年可取得的季度快照下载、SHA-256 校验和文件结构盘点已完成。共取得 12 个快照、84 个文件，原始数据约 1.09 GiB，位于 `data/raw/inside_airbnb/`。当前项目停在 W04 之前：尚未完成业务需求与指标口径、尚未设计 Doris 模型、未导入数据，业务看板也未实现。现有 Streamlit 页面仅用于检查原始文件，不计算业务指标。
+H&M 已确定为当前数据源，首批三张 CSV 已下载并完成 SHA-256 与结构核验：交易 31,788,324 行、客户 1,371,980 行、商品 105,542 行；交易日期覆盖 2018-09-20 至 2020-09-22。W03 已完成，W04 业务需求和指标设计尚未开始。原始数据位于 Git 忽略目录，不纳入版本库。
 
-详细状态见 [项目文档索引](docs/README.md) 与 [工作进度](docs/00-工作内容与进度.md)。数据范围与局限见 [数据来源与数据字典](docs/03-数据来源与数据字典.md)，逐文件证据见 [下载校验清单](docs/附件-数据下载校验清单.csv)、[数据概况](docs/附件-数据概况.csv) 和 [字段清单](docs/附件-字段清单.csv)。课程要求与报告模板保留在 `docs/课程原始文档/`。
+此前的 Airbnb 原始数据、数据工具和香港试点设计已归档保留。根据历史试点记录，香港数据曾部分装载到 Doris 的 `hk_airbnb_pilot`；本次迁移没有删除或重建该库。只读容器清点确认 Doris FE/BE 正在运行、5 个数据卷仍存在，库表行数未查询。归档位置见 [Airbnb 历史数据与证据](docs/archive/inside_airbnb/README.md)。
 
 ## 常用命令
 
-- `pixi run data-fetch`：下载清单中缺失或校验不匹配的文件。
-- `pixi run data-check`：按文件大小及 SHA-256 校验本地文件。
-- `pixi run data-inspect`：盘点 CSV、GZIP CSV 与 GeoJSON 结构。
-- `pixi run dashboard`：启动 Streamlit 原始文件盘点页。
-- `pixi run services-up`、`services-down`、`services-status`：管理 Doris 与 Metabase 服务。
+- `pixi run data-fetch`：从 Kaggle 获取三张核心 CSV。
+- `pixi run data-check`：核对文件字节数和 SHA-256。
+- `pixi run data-inspect`：盘点字段、记录数、日期范围和异常行。
+- `pixi run dashboard`：打开 W03 原始文件检查页。
+- `pixi run services-up`、`services-down`、`services-status`：管理共享 Doris 与 Metabase 服务。
 
-原始数据与本地凭据不纳入 Git。使用前参照 `.env.example` 配置本机 `.env`。协作规则见 [AGENTS.md](AGENTS.md)。
+数据清单与结构盘点见 [H&M 数据源选取](docs/12-数据源选取.md) 和 [部署与运行](docs/10-部署与运行.md)。原始数据和凭据不纳入 Git；课程原始材料保留在 `docs/课程原始文档/`。协作规则见 [AGENTS.md](AGENTS.md)。

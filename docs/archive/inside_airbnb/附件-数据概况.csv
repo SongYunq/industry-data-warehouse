@@ -1,0 +1,85 @@
+city,snapshot_date,file,records,columns,date_min,date_max,available_values
+Hong Kong,2025-12-27,listings.csv.gz,6630,85,,,{}
+Hong Kong,2025-12-27,calendar.csv.gz,2419950,5,2025-12-28,2027-01-04,"{""f"": 800853, ""t"": 1619097}"
+Hong Kong,2025-12-27,reviews.csv.gz,113424,6,2011-06-19,2025-12-28,{}
+Hong Kong,2025-12-27,listings.csv,6630,19,,,
+Hong Kong,2025-12-27,reviews.csv,113424,2,,,
+Hong Kong,2025-12-27,neighbourhoods.csv,18,2,,,
+Hong Kong,2025-12-27,neighbourhoods.geojson,18,2,,,geometry=MultiPolygon
+Hong Kong,2026-03-29,listings.csv.gz,2115,90,,,{}
+Hong Kong,2026-03-29,calendar.csv.gz,771975,5,2026-03-29,2027-03-28,"{""f"": 307917, ""t"": 464058}"
+Hong Kong,2026-03-29,reviews.csv.gz,75146,6,2011-10-30,2026-03-29,{}
+Hong Kong,2026-03-29,listings.csv,2115,19,,,
+Hong Kong,2026-03-29,reviews.csv,75146,2,,,
+Hong Kong,2026-03-29,neighbourhoods.csv,18,2,,,
+Hong Kong,2026-03-29,neighbourhoods.geojson,18,2,,,geometry=MultiPolygon
+Hong Kong,2026-06-27,listings.csv.gz,6734,90,,,{}
+Hong Kong,2026-06-27,calendar.csv.gz,2466305,5,2026-06-28,2027-07-02,"{""f"": 822349, ""t"": 1643956}"
+Hong Kong,2026-06-27,reviews.csv.gz,122471,6,2011-06-19,2026-06-30,{}
+Hong Kong,2026-06-27,listings.csv,6757,19,,,
+Hong Kong,2026-06-27,reviews.csv,122471,2,,,
+Hong Kong,2026-06-27,neighbourhoods.csv,18,2,,,
+Hong Kong,2026-06-27,neighbourhoods.geojson,18,2,,,geometry=MultiPolygon
+Hong Kong,2026-09-20,listings.csv.gz,6614,90,,,{}
+Hong Kong,2026-09-20,calendar.csv.gz,2414110,5,2026-09-25,2027-09-24,"{""f"": 887242, ""t"": 1526868}"
+Hong Kong,2026-09-20,reviews.csv.gz,122715,6,2011-02-26,2026-09-24,{}
+Hong Kong,2026-09-20,listings.csv,6614,19,,,
+Hong Kong,2026-09-20,reviews.csv,122715,2,,,
+Hong Kong,2026-09-20,neighbourhoods.csv,18,2,,,
+Hong Kong,2026-09-20,neighbourhoods.geojson,18,2,,,geometry=MultiPolygon
+Tokyo,2025-12-29,listings.csv.gz,29807,85,,,{}
+Tokyo,2025-12-29,calendar.csv.gz,10879593,5,2025-12-29,2027-01-04,"{""f"": 5429880, ""t"": 5449713}"
+Tokyo,2025-12-29,reviews.csv.gz,1081707,6,2011-09-21,2026-01-04,{}
+Tokyo,2025-12-29,listings.csv,29807,19,,,
+Tokyo,2025-12-29,reviews.csv,1081707,2,,,
+Tokyo,2025-12-29,neighbourhoods.csv,62,2,,,
+Tokyo,2025-12-29,neighbourhoods.geojson,62,2,,,geometry=MultiPolygon
+Tokyo,2026-03-30,listings.csv.gz,24790,90,,,{}
+Tokyo,2026-03-30,calendar.csv.gz,9048390,5,2026-03-30,2027-04-02,"{""f"": 4178293, ""t"": 4870097}"
+Tokyo,2026-03-30,reviews.csv.gz,1096781,6,2011-09-21,2026-04-02,{}
+Tokyo,2026-03-30,listings.csv,24790,19,,,
+Tokyo,2026-03-30,reviews.csv,1096781,2,,,
+Tokyo,2026-03-30,neighbourhoods.csv,62,2,,,
+Tokyo,2026-03-30,neighbourhoods.geojson,62,2,,,geometry=MultiPolygon
+Tokyo,2026-06-30,listings.csv.gz,34419,90,,,{}
+Tokyo,2026-06-30,calendar.csv.gz,12562921,5,2026-06-30,2027-07-02,"{""f"": 5548399, ""t"": 7014522}"
+Tokyo,2026-06-30,reviews.csv.gz,1327544,6,2011-09-21,2026-07-03,{}
+Tokyo,2026-06-30,listings.csv,34419,19,,,
+Tokyo,2026-06-30,reviews.csv,1327544,2,,,
+Tokyo,2026-06-30,neighbourhoods.csv,62,2,,,
+Tokyo,2026-06-30,neighbourhoods.geojson,62,2,,,geometry=MultiPolygon
+Tokyo,2026-09-25,listings.csv.gz,35970,90,,,{}
+Tokyo,2026-09-25,calendar.csv.gz,13137923,5,2026-09-28,2027-10-03,"{""f"": 6420839, ""t"": 6717084}"
+Tokyo,2026-09-25,reviews.csv.gz,1677064,6,2011-09-21,2026-10-03,{}
+Tokyo,2026-09-25,listings.csv,35970,19,,,
+Tokyo,2026-09-25,reviews.csv,1677064,2,,,
+Tokyo,2026-09-25,neighbourhoods.csv,62,2,,,
+Tokyo,2026-09-25,neighbourhoods.geojson,62,2,,,geometry=MultiPolygon
+Singapore,2025-12-29,listings.csv.gz,3639,85,,,{}
+Singapore,2025-12-29,calendar.csv.gz,1328235,5,2025-12-30,2027-01-04,"{""f"": 403797, ""t"": 924438}"
+Singapore,2025-12-29,reviews.csv.gz,38210,6,2011-05-04,2025-12-30,{}
+Singapore,2025-12-29,listings.csv,3639,19,,,
+Singapore,2025-12-29,reviews.csv,38210,2,,,
+Singapore,2025-12-29,neighbourhoods.csv,55,2,,,
+Singapore,2025-12-29,neighbourhoods.geojson,55,2,,,geometry=MultiPolygon
+Singapore,2026-03-30,listings.csv.gz,1192,90,,,{}
+Singapore,2026-03-30,calendar.csv.gz,435081,5,2026-03-30,2027-04-01,"{""f"": 91118, ""t"": 343963}"
+Singapore,2026-03-30,reviews.csv.gz,22549,6,2014-11-15,2026-04-01,{}
+Singapore,2026-03-30,listings.csv,1192,19,,,
+Singapore,2026-03-30,reviews.csv,22549,2,,,
+Singapore,2026-03-30,neighbourhoods.csv,55,2,,,
+Singapore,2026-03-30,neighbourhoods.geojson,55,2,,,geometry=MultiPolygon
+Singapore,2026-06-29,listings.csv.gz,3097,90,,,{}
+Singapore,2026-06-29,calendar.csv.gz,1185155,5,2026-06-29,2027-07-01,"{""f"": 268690, ""t"": 916465}"
+Singapore,2026-06-29,reviews.csv.gz,41265,6,2011-05-04,2026-06-29,{}
+Singapore,2026-06-29,listings.csv,3247,19,,,
+Singapore,2026-06-29,reviews.csv,41265,2,,,
+Singapore,2026-06-29,neighbourhoods.csv,55,2,,,
+Singapore,2026-06-29,neighbourhoods.geojson,55,2,,,geometry=MultiPolygon
+Singapore,2026-09-23,listings.csv.gz,3208,90,,,{}
+Singapore,2026-09-23,calendar.csv.gz,1170950,5,2026-09-25,2027-09-25,"{""f"": 269990, ""t"": 900960}"
+Singapore,2026-09-23,reviews.csv.gz,46000,6,2011-05-04,2026-09-25,{}
+Singapore,2026-09-23,listings.csv,3208,19,,,
+Singapore,2026-09-23,reviews.csv,46000,2,,,
+Singapore,2026-09-23,neighbourhoods.csv,55,2,,,
+Singapore,2026-09-23,neighbourhoods.geojson,55,2,,,geometry=MultiPolygon

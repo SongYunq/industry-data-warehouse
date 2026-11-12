@@ -1,7 +1,7 @@
 [workspace]
 name = "industry-data-warehouse"
 version = "0.1.0"
-description = "Inside Airbnb 城市短租数据仓库"
+description = "H&M 快时尚零售数据仓库"
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "win-64"]
 
@@ -15,14 +15,16 @@ pymysql = "==1.2.3"
 httpx = "==0.28.1"
 socksio = "==1.0.0"
 python-dotenv = "==1.2.4"
+six = "==1.17.0"
 
 [tasks]
 services-up = "python -m warehouse.cli services-up"
 services-down = "python -m warehouse.cli services-down"
 services-status = "python -m warehouse.cli services-status"
-data-fetch = "python -m inside_airbnb.cli fetch"
-data-fetch-all = "python -m inside_airbnb.cli fetch"
-data-inspect = "python -m inside_airbnb.cli inspect"
-data-check = "python -m inside_airbnb.cli check"
-dashboard = "python -m inside_airbnb.cli dashboard"
-data-load-hong-kong = "python -m inside_airbnb.hong_kong_pilot load"
+data-fetch = "python -m hm_recommendations.cli fetch"
+data-inspect = "python -m hm_recommendations.cli inspect"
+data-check = "python -m hm_recommendations.cli check"
+dashboard = "python -m hm_recommendations.cli dashboard"
+
+[pypi-dependencies]
+kaggle = "==2.2.5"

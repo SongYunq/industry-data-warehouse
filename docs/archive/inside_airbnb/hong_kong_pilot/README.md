@@ -36,10 +36,10 @@
 
 ## 代码与数据入口
 
-- 加载代码：[hong_kong_pilot.py](../src/inside_airbnb/hong_kong_pilot.py)
-- Streamlit 看板：[app.py](../apps/streamlit/app.py)
-- Doris DDL：[001_schema.sql](../sql/pilot_hong_kong/001_schema.sql)
-- 香港原始文件：`data/raw/inside_airbnb/hong_kong/`（由 Git 忽略）
+- 加载代码：[hong_kong_pilot.py](../../../../archive/inside_airbnb/src/inside_airbnb/hong_kong_pilot.py)
+- Streamlit 看板：[streamlit_app.py](../../../../archive/inside_airbnb/apps/streamlit_app.py)
+- Doris DDL：[001_schema.sql](../../../../archive/inside_airbnb/sql/pilot_hong_kong/001_schema.sql)
+- 香港原始文件：[data/archive/inside_airbnb/hong_kong/](../../../../data/archive/inside_airbnb/hong_kong/)（由 Git 忽略）
 
 ## 快速运行
 

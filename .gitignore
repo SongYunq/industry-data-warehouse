@@ -9,6 +9,8 @@ __pycache__/
 # Local source data, runtime manifests, staging files, and logs
 data/raw/*
 !data/raw/.gitkeep
+data/archive/*
+!data/archive/.gitkeep
 data/manifests/*
 !data/manifests/.gitkeep
 data/staging/*

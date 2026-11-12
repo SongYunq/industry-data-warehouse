@@ -32,7 +32,8 @@
 
 ## 当前项目目录
 
-- 项目文档和证据附件统一维护在 `docs/`；数据工具代码位于 `src/inside_airbnb/`，原始文件位于 `data/raw/inside_airbnb/`。
+- 项目文档和证据附件统一维护在 `docs/`；H&M 数据工具代码位于 `src/hm_recommendations/`，当前原始文件位于 `data/raw/hm_recommendations/`。
+- 已归档的 Airbnb 原始文件位于 `data/archive/inside_airbnb/`；旧试点代码、SQL、文档和盘点附件位于 `archive/inside_airbnb/` 与 `docs/archive/inside_airbnb/`，不作为当前工作入口。
 - 原始数据与凭据由 `.gitignore` 排除，不将大型数据文件或真实密钥提交到版本库。
 - 课程原始材料保留在 `docs/课程原始文档/`。
 - Doris、Metabase、PostgreSQL 和 Docker Compose 是共享技术组件；删除数据源专用代码时保留仍由项目使用的通用服务管理能力。
