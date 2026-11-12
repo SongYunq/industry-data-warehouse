@@ -47,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     _city_snapshot_args(inspect)
     inspect.add_argument("--output", help="可选：将数据概况另存为 CSV")
 
-    dashboard = commands.add_parser("dashboard", help="启动原始数据目录检查页")
+    dashboard = commands.add_parser("dashboard", help="启动香港短租市场观察看板")
     dashboard.add_argument(
         "--port", type=int, default=int(os.environ.get("STREAMLIT_PORT", "8501"))
     )
