@@ -1,0 +1,18 @@
+﻿数据文件,检查对象,规则或观察,结果,状态,分析限制
+transactions_train.csv,记录规模,完整读取行数,31788324,已盘点,每行按一件商品购买记录处理；不代表订单数
+transactions_train.csv,必需字段空值,t_dat、customer_id、article_id、price、sales_channel_id,0 行,通过,
+transactions_train.csv,日期范围与连续性,日期最小值、最大值、唯一日期数,2018-09-20 至 2020-09-22；734 天,通过,覆盖首尾日期之间的全部自然日；首尾月份为不完整月份
+transactions_train.csv,日期与价格格式,无法解析的日期、价格及非正价格,0 行,通过,价格字段仅作为源数值分析，不作货币或营收解释
+transactions_train.csv,源价格数值范围,最小值、最大值、均值,0.00001694915254237288；0.5915254237288136；0.02782927,观察值,数值范围本身不能证明币种、含税销售额或价格计算口径
+transactions_train.csv,客户外键覆盖,交易 customer_id 在 customers.csv 中找不到,0 行；交易涉及 1362281 个客户,通过,客户主数据中有 9699 个客户未出现在交易样本中，不解释为当前不活跃
+transactions_train.csv,商品外键覆盖,交易 article_id 在 articles.csv 中找不到,0 行；交易涉及 104547 个商品款式,通过,商品目录中有 995 个款式未出现在训练交易中，不解释为无需求或无库存
+transactions_train.csv,销售渠道编码,编码 1 与编码 2 的购买记录数,编码 1：9408462（29.60%）；编码 2：22379862（70.40%）,已盘点,编码业务名称尚待权威定义核实，当前不标注线上或线下
+transactions_train.csv,完全相同行,来源重复行的处理规则,保留每一行，不按字段去重,规则已明确,Kaggle 竞赛说明指出重复行可代表同一商品的多次购买；未统计其数量
+customers.csv,记录与客户键,行数、唯一 customer_id、重复键行数,1371980；1371980；0,通过,
+customers.csv,空值比例,FN、Active,895050（65.24%）；907576（66.15%）,已盘点,空值保留为未知，不自动改成 false
+customers.csv,空值比例,club_member_status、fashion_news_frequency、age,6062（0.44%）；16009（1.17%）；15861（1.16%）,已盘点,属性缺失分层展示；年龄只用于汇总分组
+customers.csv,年龄观察值,非空 age 最小值与最大值,16 至 99,已盘点,不是业务有效性判断；不用于个体画像或定向
+customers.csv,邮编字段,postal_code 空值和用途,0 个空值；项目来源材料将字段标记为哈希标识,限制,不用于反推地理区域、行政区或地图
+articles.csv,记录与商品键,行数、唯一 article_id、重复键行数,105542；105542；0,通过,article_id 最大值为 959461001，适用 Doris INT
+articles.csv,商品描述空值,detail_desc,416 行（0.39%）,已盘点,描述缺失不影响基于其他商品分类字段的分析
+articles.csv,商品描述长度,detail_desc 最大字符数,764,已盘点,物理设计预留 VARCHAR(1024)
