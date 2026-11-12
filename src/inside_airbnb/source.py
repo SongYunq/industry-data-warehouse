@@ -18,8 +18,8 @@ from urllib.parse import urlparse
 import httpx
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = PROJECT_ROOT / "docs_v2" / "附件-数据下载校验清单.csv"
-DEFAULT_RAW_ROOT = PROJECT_ROOT / "data_v2" / "raw" / "inside_airbnb"
+DEFAULT_MANIFEST = PROJECT_ROOT / "docs" / "附件-数据下载校验清单.csv"
+DEFAULT_RAW_ROOT = PROJECT_ROOT / "data" / "raw" / "inside_airbnb"
 CHINESE_CITY = {"hong_kong": "香港", "tokyo": "东京", "singapore": "新加坡"}
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
@@ -68,7 +68,7 @@ def load_manifest(path: str | Path | None = None) -> list[SourceFile]:
             relative = Path(row["relative_path"])
             local_path = relative.resolve() if relative.is_absolute() else (PROJECT_ROOT / relative).resolve()
             if local_path != raw_root and raw_root not in local_path.parents:
-                raise ValueError(f"清单第 {line_number} 行的落盘路径超出 V2 原始数据目录")
+                raise ValueError(f"清单第 {line_number} 行的落盘路径超出 Inside Airbnb 原始数据目录")
             relative_key = local_path.as_posix()
             if relative_key in seen:
                 raise ValueError(f"清单重复记录落盘路径：{relative_key}")

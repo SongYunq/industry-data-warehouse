@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -25,7 +26,7 @@ load_dotenv(PROJECT_ROOT / ".env", override=False)
 def _city_snapshot_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--city", help="按城市筛选：hong_kong、tokyo 或 singapore")
     parser.add_argument("--snapshot", help="按快照日期筛选，例如 2026-09-20")
-    parser.add_argument("--manifest", help="覆盖默认的 V2 数据文件清单")
+    parser.add_argument("--manifest", help="覆盖默认的数据文件清单")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -47,7 +48,9 @@ def build_parser() -> argparse.ArgumentParser:
     inspect.add_argument("--output", help="可选：将数据概况另存为 CSV")
 
     dashboard = commands.add_parser("dashboard", help="启动原始数据目录检查页")
-    dashboard.add_argument("--port", type=int, default=8501)
+    dashboard.add_argument(
+        "--port", type=int, default=int(os.environ.get("STREAMLIT_PORT", "8501"))
+    )
 
     return parser
 
@@ -120,10 +123,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "inspect":
             return _run_inspect(args)
         if args.command == "dashboard":
-            app = PROJECT_ROOT / "apps" / "streamlit_v2" / "app.py"
+            app = PROJECT_ROOT / "apps" / "streamlit" / "app.py"
+            host = os.environ.get("STREAMLIT_HOST", "127.0.0.1")
             command = [
                 sys.executable, "-m", "streamlit", "run", str(app),
-                "--server.address", "127.0.0.1", "--server.port", str(args.port),
+                "--server.address", host, "--server.port", str(args.port),
                 "--server.headless", "true", "--browser.gatherUsageStats", "false",
             ]
             return subprocess.call(command, cwd=PROJECT_ROOT)
