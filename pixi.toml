@@ -24,6 +24,9 @@ services-status = "python -m warehouse.cli services-status"
 data-fetch = "python -m hm_recommendations.cli fetch"
 data-inspect = "python -m hm_recommendations.cli inspect"
 data-check = "python -m hm_recommendations.cli check"
+data-load = "python -m hm_recommendations.cli load"
+analytics-install = "python -m hm_recommendations.analytics"
+metabase-publish = "python -m hm_recommendations.metabase"
 dashboard = "python -m hm_recommendations.cli dashboard"
 
 [pypi-dependencies]

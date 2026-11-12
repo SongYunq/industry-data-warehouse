@@ -1,5 +1,5 @@
--- W07 物理设计稿；尚未在 Doris 执行。
--- 来源 CSV 保存在本地 Git 忽略目录；建表和导入须在 W09 单独验证。
+-- H&M 分析库的 Doris 4.0.8 建表脚本。
+-- 来源 CSV 保存在本地 Git 忽略目录，由 data-load 校验和装载。
 
 CREATE DATABASE IF NOT EXISTS hm_retail_dw;
 USE hm_retail_dw;

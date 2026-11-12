@@ -1,4 +1,4 @@
-"""H&M 原始 CSV 获取、校验和结构盘点命令。"""
+"""H&M 原始 CSV 获取、校验、盘点和 Doris 装载命令。"""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def _add_file_options(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="hm-recommendations",
-        description="H&M Kaggle 数据文件获取、SHA-256 核验与 CSV 结构盘点",
+        description="H&M Kaggle 数据文件获取、SHA-256 核验、CSV 结构盘点与 Doris 装载",
     )
     commands = parser.add_subparsers(dest="command", required=True)
 
@@ -48,7 +48,10 @@ def build_parser() -> argparse.ArgumentParser:
     inspect = commands.add_parser("inspect", help="完整读取 CSV 并导出字段与记录概况")
     _add_file_options(inspect)
 
-    dashboard = commands.add_parser("dashboard", help="启动原始文件准备状态页")
+    load = commands.add_parser("load", help="校验并替换 H&M Doris 分析数据")
+    load.add_argument("--month", help="仅重载指定交易月（YYYY-MM），要求维度已装载")
+
+    dashboard = commands.add_parser("dashboard", help="启动 H&M Streamlit 购买分析看板")
     dashboard.add_argument("--port", type=int, default=8501)
     return parser
 
@@ -97,6 +100,12 @@ def main(argv: list[str] | None = None) -> int:
             return _run_check(args)
         if args.command == "inspect":
             return _run_inspect(args)
+        if args.command == "load":
+            from hm_recommendations.load import load_snapshot
+            from warehouse.config import load_settings
+
+            load_snapshot(load_settings(), args.month)
+            return 0
         if args.command == "dashboard":
             app = PROJECT_ROOT / "apps" / "streamlit" / "app.py"
             return subprocess.call([

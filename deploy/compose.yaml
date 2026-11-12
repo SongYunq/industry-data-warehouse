@@ -4,9 +4,17 @@ services:
   doris-fe:
     image: apache/doris:fe-4.0.8
     hostname: doris-fe
+    entrypoint:
+      - bash
+      - -ec
+      - |
+        [[ "$${DORIS_FE_HEAP_MB}" =~ ^[1-9][0-9]*$$ && "$${DORIS_FE_HEAP_MB}" -ge 512 ]] || exit 1
+        sed -i -E "/^JAVA_OPTS_FOR_JDK_17=/ { s/-Xms[0-9]+m/-Xms512m/; s/-Xmx[0-9]+m/-Xmx$${DORIS_FE_HEAP_MB}m/; }" /opt/apache-doris/fe/conf/fe.conf
+        exec bash init_fe.sh
     environment:
       FE_SERVERS: "fe1:172.30.0.10:9010"
       FE_ID: "1"
+      DORIS_FE_HEAP_MB: "${DORIS_FE_HEAP_MB:-2048}"
     ports:
       - "127.0.0.1:${DORIS_FE_HTTP_PORT:-8030}:8030"
       - "127.0.0.1:${DORIS_QUERY_PORT:-9030}:9030"
@@ -21,12 +29,21 @@ services:
   doris-be:
     image: apache/doris:be-4.0.8
     hostname: doris-be
+    entrypoint:
+      - bash
+      - -ec
+      - |
+        [[ "$${DORIS_BE_PAGE_CACHE_PERCENT}" =~ ^[0-9]{1,2}$$ ]] || exit 1
+        sed -i -E '/^[[:space:]]*storage_page_cache_limit[[:space:]]*=/d' /opt/apache-doris/be/conf/be.conf
+        printf '\nstorage_page_cache_limit = %s%%\n' "$${DORIS_BE_PAGE_CACHE_PERCENT}" >> /opt/apache-doris/be/conf/be.conf
+        exec bash entry_point.sh
     depends_on:
       - doris-fe
     environment:
       FE_SERVERS: "fe1:172.30.0.10:9010"
       BE_ADDR: "172.30.0.11:9050"
       SKIP_CHECK_ULIMIT: "true"
+      DORIS_BE_PAGE_CACHE_PERCENT: "${DORIS_BE_PAGE_CACHE_PERCENT:-5}"
     ports:
       - "127.0.0.1:${DORIS_BE_HTTP_PORT:-8040}:8040"
     volumes:
@@ -71,6 +88,7 @@ services:
       MB_DB_PASS: "${MB_DB_PASS:-metabase_local_dev_pwd}"
       MB_JETTY_HOST: "0.0.0.0"
       MB_JETTY_PORT: "3000"
+      JAVA_OPTS: "${METABASE_JAVA_OPTS:--Xms256m -Xmx1024m}"
     ports:
       - "127.0.0.1:${METABASE_PORT:-3000}:3000"
     volumes:
