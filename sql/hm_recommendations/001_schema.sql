@@ -22,7 +22,7 @@ PROPERTIES (
 CREATE TABLE IF NOT EXISTS dim_article
 (
     article_id                    INT NOT NULL COMMENT "源商品款式键",
-    product_code                  INT NULL COMMENT "源商品编码",
+    product_code                  INT NULL COMMENT "源商品编码，可作为候选款式族汇总键",
     prod_name                     VARCHAR(64) NULL COMMENT "商品名称",
     product_type_no               SMALLINT NULL COMMENT "商品类型编码",
     product_type_name             VARCHAR(64) NULL COMMENT "商品类型名称",

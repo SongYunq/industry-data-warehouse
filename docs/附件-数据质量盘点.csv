@@ -16,3 +16,10 @@ customers.csv,邮编字段,postal_code 空值和用途,0 个空值；项目来�
 articles.csv,记录与商品键,行数、唯一 article_id、重复键行数,105542；105542；0,通过,article_id 最大值为 959461001，适用 Doris INT
 articles.csv,商品描述空值,detail_desc,416 行（0.39%）,已盘点,描述缺失不影响基于其他商品分类字段的分析
 articles.csv,商品描述长度,detail_desc 最大字符数,764,已盘点,物理设计预留 VARCHAR(1024)
+articles.csv,商品款式候选分组,不同 product_code 数,47224,已盘点,可用于候选款式族汇总；字段业务含义未在官方说明中单独定义
+articles.csv,商品款式候选分组,product_code 下含多个 article_id 的组,23158 / 47224,已盘点,每组最多 75 个 article_id；保留 article_id 作为颜色／款式变体粒度
+articles.csv,编码结构关系,article_id 整除 1000 后等于 product_code,105542 / 105542 行匹配,观察到的结构关系,该结构支持候选款式族聚合，但仍不替代源字段业务定义
+articles.csv,商品颜色变化,product_code 组内出现多个 colour_group_name,22352 个组,已盘点,不能把购买颜色构成解释为库存供给或颜色偏好因果
+articles.csv,商品图案变化,product_code 组内出现多个 graphical_appearance_name,9576 个组,已盘点,同一候选款式族的其他分类属性需检查一致性
+articles.csv,商品分类一致性,product_code 组内多个 product_type_name 或 product_group_name,314 个组有多个类型；96 个组有多个商品组,限制,款式族汇总需单独保留分类冲突，不能强行用单一分类覆盖
+articles.csv,结构化商品维度基数,颜色组、图案、商品类型、版块、department 的不同值数,50；30；131；56；250,已盘点,按实际字段值分组，长尾值在展示中合并时需保留可下钻明细
