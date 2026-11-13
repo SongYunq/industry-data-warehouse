@@ -1,0 +1,603 @@
+field,source,zh
+product_group_name,Accessories,配饰
+product_group_name,Bags,包袋
+product_group_name,Cosmetic,化妆品
+product_group_name,Fun,趣味用品
+product_group_name,Furniture,家具
+product_group_name,Garment and Shoe care,衣物与鞋类护理
+product_group_name,Garment Full body,连身服装
+product_group_name,Garment Lower body,下装
+product_group_name,Garment Upper body,上装
+product_group_name,Interior textile,家居纺织品
+product_group_name,Items,用品
+product_group_name,Nightwear,睡衣
+product_group_name,Shoes,鞋类
+product_group_name,Socks & Tights,袜子与连裤袜
+product_group_name,Stationery,文具
+product_group_name,Swimwear,泳装
+product_group_name,Underwear,内衣
+product_group_name,Underwear/nightwear,内衣与睡衣
+product_group_name,Unknown,未知
+product_type_name,Accessories set,配饰套装
+product_type_name,Alice band,硬质发箍
+product_type_name,Baby Bib,婴儿围兜
+product_type_name,Backpack,双肩包
+product_type_name,Bag,包袋
+product_type_name,Ballerinas,芭蕾平底鞋
+product_type_name,Beanie,无檐针织帽
+product_type_name,Belt,腰带
+product_type_name,Bikini top,比基尼上衣
+product_type_name,Blanket,毯子
+product_type_name,Blazer,西装外套
+product_type_name,Blouse,女式衬衫
+product_type_name,Bodysuit,连体衣
+product_type_name,Bootie,短靴
+product_type_name,Boots,靴子
+product_type_name,Bra,文胸
+product_type_name,Bra extender,文胸延长扣
+product_type_name,Bracelet,手链
+product_type_name,Braces,吊裤带
+product_type_name,Bucket hat,渔夫帽
+product_type_name,Bumbag,腰包
+product_type_name,Cap,便帽
+product_type_name,Cap/peaked,鸭舌帽
+product_type_name,Cardigan,针织开衫
+product_type_name,Chem. cosmetics,化学类化妆品
+product_type_name,Clothing mist,衣物香氛喷雾
+product_type_name,Coat,大衣
+product_type_name,Costumes,装扮服
+product_type_name,Cross-body bag,斜挎包
+product_type_name,Cushion,靠垫
+product_type_name,Dog Wear,宠物狗服饰
+product_type_name,Dog wear,宠物狗服饰
+product_type_name,Dress,连衣裙
+product_type_name,Dungarees,背带裤
+product_type_name,Earring,耳饰
+product_type_name,Earrings,耳饰
+product_type_name,Eyeglasses,眼镜
+product_type_name,Felt hat,毡帽
+product_type_name,Fine cosmetics,精品化妆品
+product_type_name,Flat shoe,平底鞋
+product_type_name,Flat shoes,平底鞋
+product_type_name,Flip flop,人字拖
+product_type_name,Garment Set,服装套装
+product_type_name,Giftbox,礼盒
+product_type_name,Gloves,手套
+product_type_name,Hair clip,发夹
+product_type_name,Hair string,发绳
+product_type_name,Hair ties,发圈
+product_type_name,Hair/alice band,发带与发箍
+product_type_name,Hairband,发带
+product_type_name,Hat/beanie,帽子与无檐针织帽
+product_type_name,Hat/brim,有檐帽
+product_type_name,Headband,头带
+product_type_name,Heeled sandals,高跟凉鞋
+product_type_name,Heels,高跟鞋
+product_type_name,Hoodie,连帽衫
+product_type_name,Jacket,夹克
+product_type_name,Jumpsuit/Playsuit,长款或短款连体装
+product_type_name,Keychain,钥匙扣
+product_type_name,Kids Underwear top,儿童内衣上衣
+product_type_name,Leg warmers,护腿套
+product_type_name,Leggings/Tights,打底裤与连裤袜
+product_type_name,Long John,保暖长内衣
+product_type_name,Marker pen,马克笔
+product_type_name,Mobile case,手机壳
+product_type_name,Moccasins,软底便鞋
+product_type_name,Necklace,项链
+product_type_name,Night gown,睡裙
+product_type_name,Nipple covers,乳贴
+product_type_name,Other accessories,其他配饰
+product_type_name,Other shoe,其他鞋类
+product_type_name,Outdoor overall,户外连体服
+product_type_name,Outdoor trousers,户外长裤
+product_type_name,Outdoor Waistcoat,户外马甲
+product_type_name,Polo shirt,马球衫
+product_type_name,Pre-walkers,婴儿学步前软底鞋
+product_type_name,Pumps,浅口高跟鞋
+product_type_name,Pyjama bottom,睡裤
+product_type_name,Pyjama jumpsuit/playsuit,连体睡衣
+product_type_name,Pyjama set,睡衣套装
+product_type_name,Ring,戒指
+product_type_name,Robe,袍式家居服
+product_type_name,Sandals,凉鞋
+product_type_name,Sarong,纱笼裙
+product_type_name,Scarf,围巾
+product_type_name,Sewing kit,针线包
+product_type_name,Shirt,衬衫
+product_type_name,Shorts,短裤
+product_type_name,Shoulder bag,单肩包
+product_type_name,Side table,边几
+product_type_name,Skirt,半身裙
+product_type_name,Sleep Bag,睡袋
+product_type_name,Sleeping sack,睡袋
+product_type_name,Slippers,拖鞋
+product_type_name,Sneakers,运动休闲鞋
+product_type_name,Socks,袜子
+product_type_name,Soft Toys,软体玩具
+product_type_name,Stain remover spray,去渍喷雾
+product_type_name,Straw hat,草帽
+product_type_name,Sunglasses,太阳镜
+product_type_name,Sweater,针织套头衫
+product_type_name,Swimsuit,泳衣
+product_type_name,Swimwear bottom,泳装下装
+product_type_name,Swimwear set,泳装套装
+product_type_name,Swimwear top,泳装上衣
+product_type_name,T-shirt,T 恤
+product_type_name,Tailored Waistcoat,正装马甲
+product_type_name,Tie,领带
+product_type_name,Top,上衣
+product_type_name,Tote bag,托特包
+product_type_name,Towel,毛巾
+product_type_name,Toy,玩具
+product_type_name,Trousers,长裤
+product_type_name,Umbrella,伞
+product_type_name,Underdress,内搭衬裙
+product_type_name,Underwear body,连体内衣
+product_type_name,Underwear bottom,内衣下装
+product_type_name,Underwear corset,束身内衣
+product_type_name,Underwear set,内衣套装
+product_type_name,Underwear Tights,内穿连裤袜
+product_type_name,Unknown,未知
+product_type_name,Vest top,背心上衣
+product_type_name,Wallet,钱包
+product_type_name,Washing bag,洗衣袋
+product_type_name,Watch,手表
+product_type_name,Waterbottle,水壶
+product_type_name,Wedge,坡跟鞋
+product_type_name,Weekend/Gym bag,短途旅行包与健身包
+product_type_name,Wireless earphone case,无线耳机保护盒
+product_type_name,Wood balls,木球
+product_type_name,Zipper head,拉链头
+garment_group_name,Accessories,配饰
+garment_group_name,Blouses,女式衬衫
+garment_group_name,Dressed,正装
+garment_group_name,Dresses Ladies,女士连衣裙
+garment_group_name,Dresses/Skirts girls,女童连衣裙与半身裙
+garment_group_name,Jersey Basic,基础平纹针织
+garment_group_name,Jersey Fancy,花式平纹针织
+garment_group_name,Knitwear,针织服装
+garment_group_name,Outdoor,户外服装
+garment_group_name,Shirts,衬衫
+garment_group_name,Shoes,鞋类
+garment_group_name,Shorts,短裤
+garment_group_name,Skirts,半身裙
+garment_group_name,Socks and Tights,袜子与连裤袜
+garment_group_name,Special Offers,特惠商品
+garment_group_name,Swimwear,泳装
+garment_group_name,Trousers,长裤
+garment_group_name,Trousers Denim,牛仔长裤
+garment_group_name,"Under-, Nightwear",内衣与睡衣
+garment_group_name,Unknown,未知
+garment_group_name,Woven/Jersey/Knitted mix Baby,婴儿装：梭织、平纹针织及其他针织
+index_group_name,Baby/Children,婴幼童装
+index_group_name,Ladieswear,女装
+index_group_name,Menswear,男装
+index_group_name,Sport,运动系列
+index_name,Baby Sizes 50-98,婴儿装 50–98 码
+index_name,"Children Accessories, Swimwear",儿童配饰与泳装
+index_name,Children Sizes 134-170,童装 134–170 码
+index_name,Children Sizes 92-140,童装 92–140 码
+index_name,Ladies Accessories,女士配饰
+index_name,Ladieswear,女装
+index_name,Lingeries/Tights,女士内衣与连裤袜
+index_name,Menswear,男装
+index_name,Sport,运动系列
+department_name,Accessories,配饰
+department_name,Accessories Boys,男童配饰
+department_name,Accessories Other,其他配饰
+department_name,AK Bottoms,AK 下装
+department_name,AK Dresses & Outdoor,AK 连衣裙与户外服装
+department_name,AK Other,AK 其他商品
+department_name,AK Tops Jersey & Woven,AK 平纹针织与梭织上装
+department_name,AK Tops Knitwear,AK 针织上装
+department_name,Asia Assortment,亚洲市场商品组合
+department_name,Baby basics,婴儿基础款
+department_name,Baby Boy Jersey Fancy,男婴花式平纹针织
+department_name,Baby Boy Knitwear,男婴针织服装
+department_name,Baby Boy Local Relevance,男婴地区适配款
+department_name,Baby Boy Outdoor,男婴户外服装
+department_name,Baby Boy Woven,男婴梭织服装
+department_name,Baby Exclusive,婴儿限定系列
+department_name,Baby Girl Jersey Fancy,女婴花式平纹针织
+department_name,Baby Girl Knitwear,女婴针织服装
+department_name,Baby Girl Local Relevance,女婴地区适配款
+department_name,Baby Girl Outdoor,女婴户外服装
+department_name,Baby Girl Woven,女婴梭织服装
+department_name,Baby Nightwear,婴儿睡衣
+department_name,Baby Shoes,婴儿鞋
+department_name,Baby Socks,婴儿袜
+department_name,Baby Toys/Acc,婴儿玩具与配饰
+department_name,Bags,包袋
+department_name,Bags & Items,包袋与用品
+department_name,Basic 1,基础款 1
+department_name,Basics,基础款
+department_name,Belts,腰带
+department_name,Blanks,空白款
+department_name,Blazer,西装外套
+department_name,Blazer S&T,S&T 西装外套
+department_name,Blouse,女式衬衫
+department_name,Blouse & Dress,女式衬衫与连衣裙
+department_name,Boots,靴子
+department_name,Bottoms,下装
+department_name,Bottoms Boys,男童下装
+department_name,Bottoms Girls,女童下装
+department_name,Boys Local Relevance,男童地区适配款
+department_name,Boys Small Acc & Bags,男童小配饰与包袋
+department_name,Campaigns,推广活动款
+department_name,Casual Lingerie,休闲内衣
+department_name,Clean Lingerie,简约内衣
+department_name,Denim Other Garments,其他牛仔服饰
+department_name,Denim shorts,牛仔短裤
+department_name,Denim Trousers,牛仔长裤
+department_name,Denim trousers,牛仔长裤
+department_name,Denim wardrobe H&M man inactive from S.6,H&M 男士牛仔系列，自 S.6 起停用
+department_name,Divided Shoes,Divided 鞋类
+department_name,Divided Swimwear,Divided 泳装
+department_name,Divided+ inactive from s.1,Divided+ 自 s.1 起停用
+department_name,Dress,连衣裙
+department_name,Dress-up Boys,男童装扮服
+department_name,Dresses,连衣裙
+department_name,Dresses DS,DS 连衣裙
+department_name,EQ & Special Collections,EQ 与特别系列
+department_name,EQ Divided Basics,EQ Divided 基础款
+department_name,EQ Divided Blue,EQ Divided Blue 系列
+department_name,EQ H&M Man,EQ H&M 男装
+department_name,EQ Ladies Denim,EQ 女士牛仔服饰
+department_name,Equatorial,赤道地区商品
+department_name,Equatorial Assortment,赤道地区商品组合
+department_name,Everyday Waredrobe Denim,日常牛仔服饰
+department_name,Expressive Lingerie,个性内衣
+department_name,Flats,平底鞋
+department_name,Functional Lingerie,功能型内衣
+department_name,Girls Local Relevance,女童地区适配款
+department_name,Girls Projects,女童项目款
+department_name,Girls Small Acc/Bags,女童小配饰与包袋
+department_name,Gloves/Hats,手套与帽子
+department_name,Hair Accessories,发饰
+department_name,Heavy Basic Jersey,厚款基础平纹针织
+department_name,Heels,高跟鞋
+department_name,Jacket,夹克
+department_name,Jacket Casual,休闲夹克
+department_name,Jacket Smart,正式夹克
+department_name,Jacket Street,街头风夹克
+department_name,Jackets,夹克
+department_name,Jersey,平纹针织
+department_name,Jersey Basic,基础平纹针织
+department_name,Jersey Fancy,花式平纹针织
+department_name,Jersey fancy,花式平纹针织
+department_name,Jersey Fancy DS,DS 花式平纹针织
+department_name,Jersey inactive from S.6,平纹针织，自 S.6 起停用
+department_name,Jersey inactive from s1,平纹针织，自 s1 起停用
+department_name,Jersey License,授权款平纹针织
+department_name,Jersey Occasion,场合款平纹针织
+department_name,Jersey/Knitwear Premium,高端平纹针织与其他针织
+department_name,Jewellery,饰品
+department_name,Jewellery Extended,饰品扩展系列
+department_name,Kids Boy Big Acc,男童大件配饰
+department_name,Kids Boy Denim,男童牛仔服饰
+department_name,Kids Boy Exclusive,男童限定系列
+department_name,Kids Boy Jersey Basic,男童基础平纹针织
+department_name,Kids Boy Jersey Fancy,男童花式平纹针织
+department_name,Kids Boy Knitwear,男童针织服装
+department_name,Kids Boy License,男童授权款
+department_name,Kids Boy Outdoor,男童户外服装
+department_name,Kids Boy Shirt,男童衬衫
+department_name,Kids Boy Shoes,男童鞋
+department_name,Kids Boy Shorts,男童短裤
+department_name,Kids Boy Socks,男童袜
+department_name,Kids Boy Swimwear,男童泳装
+department_name,Kids Boy Trouser,男童长裤
+department_name,Kids Boy UW/NW,男童内衣与睡衣
+department_name,Kids Dress-up/Football,儿童装扮服与足球用品
+department_name,Kids Girl Big Acc,女童大件配饰
+department_name,Kids Girl Denim,女童牛仔服饰
+department_name,Kids Girl Dresses,女童连衣裙
+department_name,Kids Girl Exclusive,女童限定系列
+department_name,Kids Girl Jersey Basic,女童基础平纹针织
+department_name,Kids Girl Jersey Fancy,女童花式平纹针织
+department_name,Kids Girl Knitwear,女童针织服装
+department_name,Kids Girl License,女童授权款
+department_name,Kids Girl Outdoor,女童户外服装
+department_name,Kids Girl S&T,女童 S&T 系列
+department_name,Kids Girl Shoes,女童鞋
+department_name,Kids Girl Swimwear,女童泳装
+department_name,Kids Girl Trouser,女童长裤
+department_name,Kids Girl UW/NW,女童内衣与睡衣
+department_name,Knit & Woven,针织与梭织
+department_name,Knitwear,针织服装
+department_name,Knitwear Basic,基础针织服装
+department_name,Knitwear inactive from s1,针织服装，自 s1 起停用
+department_name,Ladies Sport Acc,女士运动配饰
+department_name,Ladies Sport Bottoms,女士运动下装
+department_name,Ladies Sport Bras,女士运动文胸
+department_name,Ladies Sport Woven,女士梭织运动服装
+department_name,License,授权款
+department_name,Light Basic Jersey,薄款基础平纹针织
+department_name,Limited Edition,限量系列
+department_name,Local relevance,地区适配款
+department_name,Loungewear,家居服
+department_name,Mama Lingerie,孕产妇内衣
+department_name,Men Sport Acc,男士运动配饰
+department_name,Men Sport Bottoms,男士运动下装
+department_name,Men Sport Tops,男士运动上装
+department_name,Men Sport Woven,男士梭织运动服装
+department_name,Newborn,新生儿用品
+department_name,Nightwear,睡衣
+department_name,Nursing,哺乳系列
+department_name,OL Extended Sizes,OL 扩展尺码
+department_name,On Demand,按需系列
+department_name,Other Accessories,其他配饰
+department_name,Other items,其他用品
+department_name,Outdoor inactive from s1,户外服装，自 s1 起停用
+department_name,Outdoor/Blazers,户外服装与西装外套
+department_name,Outdoor/Blazers DS,DS 户外服装与西装外套
+department_name,Outwear,外套
+department_name,Outwear & Blazers,外套与西装外套
+department_name,Premium Quality,高品质系列
+department_name,Price Items,价格类商品
+department_name,Projects,项目款
+department_name,Projects Dresses,项目款连衣裙
+department_name,Projects Jersey & Knitwear,项目款平纹针织与其他针织
+department_name,Projects Woven Bottoms,项目款梭织下装
+department_name,Projects Woven Tops,项目款梭织上装
+department_name,Promotion / Other / Offer,促销、其他及优惠商品
+department_name,Promotion/ Other /Offer,促销、其他及优惠商品
+department_name,Promotion/Other/Offer,促销、其他及优惠商品
+department_name,Read & React,研判与响应系列
+department_name,Scarves,围巾
+department_name,Shirt,衬衫
+department_name,Shirt Extended inactive from s1,衬衫扩展系列，自 s1 起停用
+department_name,Shirt S&T,S&T 衬衫
+department_name,Shoes,鞋类
+department_name,Shoes / Boots inactive from s5,鞋靴，自 s5 起停用
+department_name,Shoes Other,其他鞋类
+department_name,Shopbasket Lingerie,购物篮系列内衣
+department_name,Shopbasket Socks,购物篮系列袜子
+department_name,Shorts,短裤
+department_name,Shorts & Skirts,短裤与半身裙
+department_name,Shorts DS,DS 短裤
+department_name,Skirt,半身裙
+department_name,Skirts,半身裙
+department_name,Skirts DS,DS 半身裙
+department_name,Small Acc. Jewellery & Other,小配饰、饰品及其他
+department_name,Small Accessories,小配饰
+department_name,Small Accessories Extended,小配饰扩展系列
+department_name,Small Bags,小包
+department_name,Sneakers,运动休闲鞋
+department_name,Sneakers big girl inactive from s2,大龄女童运动休闲鞋，自 s2 起停用
+department_name,Sneakers small girl inactive from s2,低龄女童运动休闲鞋，自 s2 起停用
+department_name,Socks,袜子
+department_name,Socks Bin,筐装袜
+department_name,Socks Wall,墙架陈列袜
+department_name,Special Collection,特别系列
+department_name,Studio Collection,Studio 系列
+department_name,Suit,套装西服
+department_name,Suit Extended inactive from s1,西服扩展系列，自 s1 起停用
+department_name,Suit jacket,西服上衣
+department_name,Sunglasses,太阳镜
+department_name,Swimwear,泳装
+department_name,Take care,衣物护理
+department_name,Take Care External,外部衣物护理系列
+department_name,Test Ladies,女装测试类
+department_name,Tights basic,基础款连裤袜
+department_name,Tops & Bottoms Other,其他上装与下装
+department_name,Tops Boys,男童上装
+department_name,Tops Fancy Jersey,花式平纹针织上装
+department_name,Tops Girls,女童上装
+department_name,Tops Knitwear,针织上装
+department_name,Tops Knitwear DS,DS 针织上装
+department_name,Tops Woven,梭织上装
+department_name,Tops woven DS,DS 梭织上装
+department_name,Trouser,长裤
+department_name,Trouser S&T,S&T 长裤
+department_name,Trousers,长裤
+department_name,Trousers & Skirt,长裤与半身裙
+department_name,Trousers DS,DS 长裤
+department_name,Underwear Jersey,平纹针织内衣
+department_name,Underwear Jersey Fancy inactive from s1,花式平纹针织内衣，自 s1 起停用
+department_name,Underwear Woven,梭织内衣
+department_name,UW,内衣
+department_name,Woven,梭织
+department_name,Woven bottoms,梭织下装
+department_name,Woven bottoms inactive from S.7,梭织下装，自 S.7 起停用
+department_name,Woven inactive from s1,梭织服装，自 s1 起停用
+department_name,Woven Occasion,场合款梭织服装
+department_name,Woven Premium,高端梭织服装
+department_name,Woven top,梭织上装
+department_name,Woven Tops,梭织上装
+department_name,Young Boy Big Acc,低龄男童大件配饰
+department_name,Young Boy Denim,低龄男童牛仔服饰
+department_name,Young Boy Jersey Basic,低龄男童基础平纹针织
+department_name,Young Boy Jersey Fancy,低龄男童花式平纹针织
+department_name,Young Boy Knitwear,低龄男童针织服装
+department_name,Young Boy Outdoor,低龄男童户外服装
+department_name,Young Boy Shirt,低龄男童衬衫
+department_name,Young Boy Shoes,低龄男童鞋
+department_name,Young Boy Shorts,低龄男童短裤
+department_name,Young Boy Socks,低龄男童袜
+department_name,Young boy Swimwear,低龄男童泳装
+department_name,Young Boy Trouser,低龄男童长裤
+department_name,Young Boy UW/NW,低龄男童内衣与睡衣
+department_name,Young Girl Big Acc,低龄女童大件配饰
+department_name,Young Girl Denim,低龄女童牛仔服饰
+department_name,Young Girl Dresses,低龄女童连衣裙
+department_name,Young Girl Jersey Basic,低龄女童基础平纹针织
+department_name,Young Girl Jersey Fancy,低龄女童花式平纹针织
+department_name,Young Girl Knitwear,低龄女童针织服装
+department_name,Young Girl Outdoor,低龄女童户外服装
+department_name,Young Girl S&T,低龄女童 S&T 系列
+department_name,Young Girl Shoes,低龄女童鞋
+department_name,Young Girl Swimwear,低龄女童泳装
+department_name,Young Girl Trouser,低龄女童长裤
+department_name,Young Girl UW/NW,低龄女童内衣与睡衣
+section_name,Baby Boy,男婴
+section_name,Baby Essentials & Complements,婴儿必需品与搭配用品
+section_name,Baby Girl,女婴
+section_name,Boys Underwear & Basics,男童内衣与基础款
+section_name,Collaborations,合作系列
+section_name,Contemporary Casual,现代休闲
+section_name,Contemporary Smart,现代正装
+section_name,Contemporary Street,现代街头
+section_name,Denim Men,男士牛仔服饰
+section_name,Divided Accessories,Divided 配饰
+section_name,Divided Asia keys,Divided 亚洲市场重点款
+section_name,Divided Basics,Divided 基础款
+section_name,Divided Collection,Divided 服饰系列
+section_name,Divided Complements Other,Divided 其他搭配用品
+section_name,Divided Projects,Divided 项目款
+section_name,Divided Selected,Divided 精选款
+section_name,EQ Divided,EQ Divided 系列
+section_name,Girls Underwear & Basics,女童内衣与基础款
+section_name,Kids & Baby Shoes,婴童鞋
+section_name,"Kids Accessories, Swimwear & D",儿童配饰、泳装与 D 类
+section_name,Kids Boy,男童
+section_name,Kids Girl,女童
+section_name,Kids Local Relevance,儿童地区适配款
+section_name,Kids Outerwear,儿童外套
+section_name,Kids Sports,儿童运动服饰
+section_name,Ladies Denim,女士牛仔服饰
+section_name,Ladies H&M Sport,女士 H&M 运动服饰
+section_name,Ladies Other,其他女士商品
+section_name,Mama,孕妇装
+section_name,Men Accessories,男士配饰
+section_name,Men Edition,男士精选系列
+section_name,Men H&M Sport,男士 H&M 运动服饰
+section_name,Men Other,其他男士商品
+section_name,Men Other 2,其他男士商品 2
+section_name,Men Project,男士项目款
+section_name,Men Shoes,男士鞋
+section_name,Men Suits & Tailoring,男士西服与正装
+section_name,Men Underwear,男士内衣
+section_name,Mens Outerwear,男士外套
+section_name,Special Collections,特别系列
+section_name,Womens Big accessories,女士大件配饰
+section_name,Womens Casual,女士休闲服装
+section_name,Womens Everyday Basics,女士日常基础款
+section_name,Womens Everyday Collection,女士日常系列
+section_name,Womens Jackets,女士夹克
+section_name,Womens Lingerie,女士内衣
+section_name,"Womens Nightwear, Socks & Tigh",女士睡衣、袜子与连裤袜
+section_name,Womens Premium,女士高端系列
+section_name,Womens Shoes,女士鞋
+section_name,Womens Small accessories,女士小配饰
+section_name,"Womens Swimwear, beachwear",女士泳装与沙滩装
+section_name,Womens Tailoring,女士正装
+section_name,Womens Trend,女士潮流服装
+section_name,Young Boy,低龄男童
+section_name,Young Girl,低龄女童
+colour_group_name,Beige,米色
+colour_group_name,Black,黑色
+colour_group_name,Blue,蓝色
+colour_group_name,Bronze/Copper,古铜色与铜色
+colour_group_name,Dark Beige,深米色
+colour_group_name,Dark Blue,深蓝色
+colour_group_name,Dark Green,深绿色
+colour_group_name,Dark Grey,深灰色
+colour_group_name,Dark Orange,深橙色
+colour_group_name,Dark Pink,深粉色
+colour_group_name,Dark Purple,深紫色
+colour_group_name,Dark Red,深红色
+colour_group_name,Dark Turquoise,深绿松石色
+colour_group_name,Dark Yellow,深黄色
+colour_group_name,Gold,金色
+colour_group_name,Green,绿色
+colour_group_name,Greenish Khaki,偏绿卡其色
+colour_group_name,Grey,灰色
+colour_group_name,Greyish Beige,灰米色
+colour_group_name,Light Beige,浅米色
+colour_group_name,Light Blue,浅蓝色
+colour_group_name,Light Green,浅绿色
+colour_group_name,Light Grey,浅灰色
+colour_group_name,Light Orange,浅橙色
+colour_group_name,Light Pink,浅粉色
+colour_group_name,Light Purple,浅紫色
+colour_group_name,Light Red,浅红色
+colour_group_name,Light Turquoise,浅绿松石色
+colour_group_name,Light Yellow,浅黄色
+colour_group_name,Off White,米白色
+colour_group_name,Orange,橙色
+colour_group_name,Other,其他
+colour_group_name,Other Blue,其他蓝色
+colour_group_name,Other Green,其他绿色
+colour_group_name,Other Orange,其他橙色
+colour_group_name,Other Pink,其他粉色
+colour_group_name,Other Purple,其他紫色
+colour_group_name,Other Red,其他红色
+colour_group_name,Other Turquoise,其他绿松石色
+colour_group_name,Other Yellow,其他黄色
+colour_group_name,Pink,粉色
+colour_group_name,Purple,紫色
+colour_group_name,Red,红色
+colour_group_name,Silver,银色
+colour_group_name,Transparent,透明
+colour_group_name,Turquoise,绿松石色
+colour_group_name,Unknown,未知
+colour_group_name,White,白色
+colour_group_name,Yellow,黄色
+colour_group_name,Yellowish Brown,黄褐色
+perceived_colour_master_name,Beige,米色
+perceived_colour_master_name,Black,黑色
+perceived_colour_master_name,Blue,蓝色
+perceived_colour_master_name,Bluish Green,偏蓝绿色
+perceived_colour_master_name,Brown,棕色
+perceived_colour_master_name,Green,绿色
+perceived_colour_master_name,Grey,灰色
+perceived_colour_master_name,Khaki green,卡其绿
+perceived_colour_master_name,Lilac Purple,丁香紫
+perceived_colour_master_name,Metal,金属色
+perceived_colour_master_name,Mole,灰褐色
+perceived_colour_master_name,Orange,橙色
+perceived_colour_master_name,Pink,粉色
+perceived_colour_master_name,Red,红色
+perceived_colour_master_name,Turquoise,绿松石色
+perceived_colour_master_name,undefined,未定义
+perceived_colour_master_name,Unknown,未知
+perceived_colour_master_name,White,白色
+perceived_colour_master_name,Yellow,黄色
+perceived_colour_master_name,Yellowish Green,偏黄绿色
+perceived_colour_value_name,Bright,鲜亮
+perceived_colour_value_name,Dark,深色
+perceived_colour_value_name,Dusty Light,偏灰浅色
+perceived_colour_value_name,Light,浅色
+perceived_colour_value_name,Medium,中等明度
+perceived_colour_value_name,Medium Dusty,偏灰中等明度
+perceived_colour_value_name,Undefined,未定义
+perceived_colour_value_name,Unknown,未知
+graphical_appearance_name,All over pattern,满版图案
+graphical_appearance_name,Application/3D,贴饰与立体装饰
+graphical_appearance_name,Argyle,菱格纹
+graphical_appearance_name,Chambray,青年布纹理
+graphical_appearance_name,Check,格纹
+graphical_appearance_name,Colour blocking,色块拼接
+graphical_appearance_name,Contrast,撞色
+graphical_appearance_name,Denim,牛仔纹理
+graphical_appearance_name,Dot,圆点
+graphical_appearance_name,Embroidery,刺绣
+graphical_appearance_name,Front print,正面印花
+graphical_appearance_name,Glittering/Metallic,闪光与金属效果
+graphical_appearance_name,Hologram,全息效果
+graphical_appearance_name,Jacquard,提花
+graphical_appearance_name,Lace,蕾丝
+graphical_appearance_name,Melange,混色纱纹理
+graphical_appearance_name,Mesh,网眼
+graphical_appearance_name,Metallic,金属光泽
+graphical_appearance_name,Mixed solid/pattern,纯色与图案混搭
+graphical_appearance_name,Neps,结粒纱纹理
+graphical_appearance_name,Other pattern,其他图案
+graphical_appearance_name,Other structure,其他织物结构
+graphical_appearance_name,Placement print,定位印花
+graphical_appearance_name,Sequin,亮片
+graphical_appearance_name,Slub,竹节纹理
+graphical_appearance_name,Solid,纯色
+graphical_appearance_name,Stripe,条纹
+graphical_appearance_name,Transparent,透明
+graphical_appearance_name,Treatment,表面处理
+graphical_appearance_name,Unknown,未知
+club_member_status,ACTIVE,活跃
+club_member_status,LEFT CLUB,已退出会员
+club_member_status,PRE-CREATE,预创建
+fashion_news_frequency,Monthly,每月
+fashion_news_frequency,NONE,不接收
+fashion_news_frequency,None,不接收
+fashion_news_frequency,Regularly,定期

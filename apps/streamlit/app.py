@@ -13,6 +13,7 @@ import pymysql
 import streamlit as st
 
 import queries as q
+from hm_recommendations.labels import bilingual
 from hm_recommendations.source import FILES, SOURCE_PAGE, verify_files
 
 ACCENT = "#a51c3d"
@@ -31,6 +32,19 @@ STAGE_COLUMNS = {
     "gap_p75": "间隔 P75（天）",
 }
 PAGES = ["经营概览", "商品组合", "客户回购", "渠道旅程", "文件核验"]
+SOURCE_FILE_LABELS = {
+    "articles.csv": "商品目录",
+    "customers.csv": "客户属性",
+    "transactions_train.csv": "训练期购买明细",
+}
+SOURCE_STATUS_LABELS = {
+    "verified": "校验通过",
+    "missing": "文件缺失",
+    "manifest_missing": "缺少校验清单",
+    "size_mismatch": "字节数不匹配",
+    "size_matches": "字节数匹配",
+    "sha256_mismatch": "SHA-256 不匹配",
+}
 
 st.set_page_config(page_title="H&M 购买分析", layout="wide")
 
@@ -49,6 +63,14 @@ def ratio(numerator: int, denominator: int) -> float | None:
 
 def article_code(value: object) -> str:
     return str(int(value)).zfill(10) if str(value).isdecimal() else str(value)
+
+
+def bilingual_columns(data: pd.DataFrame, **fields: str) -> pd.DataFrame:
+    """Translate display values without modifying the raw query results."""
+    return data.assign(**{
+        column: data[column].map(lambda value: bilingual(value, field))
+        for column, field in fields.items()
+    })
 
 
 def display_table(data: pd.DataFrame, columns: dict[str, str], rates: tuple[str, ...] = ()) -> None:
@@ -85,7 +107,7 @@ def bars(data: pd.DataFrame, field: str, field_label: str, limit: int = 15) -> N
         return
     chart = alt.Chart(data.head(limit)).mark_bar(color=ACCENT, cornerRadiusEnd=3).encode(
         x=alt.X("items:Q", title="购买件数"),
-        y=alt.Y(f"{field}:N", title=field_label, sort="-x", axis=alt.Axis(labelLimit=175)),
+        y=alt.Y(f"{field}:N", title=field_label, sort="-x", axis=alt.Axis(labelLimit=230)),
         tooltip=[
             alt.Tooltip(f"{field}:N", title=field_label),
             alt.Tooltip("items:Q", title="购买件数", format=","),
@@ -126,7 +148,10 @@ def trend(data: pd.DataFrame, scope: q.Scope, columns: dict[str, str], *, shares
 def filter_box(field: str, title: str, current: str | None) -> str | None:
     options = [None, *q.options(field)]
     index = options.index(current) if current in options else 0
-    return st.selectbox(title, options, index=index, key=f"filter_{field}", format_func=lambda value: "全部" if value is None else value)
+    return st.selectbox(
+        title, options, index=index, key=f"filter_{field}",
+        format_func=lambda value: "全部" if value is None else bilingual(value, field),
+    )
 
 
 def sidebar_scope() -> q.Scope:
@@ -197,11 +222,11 @@ def show_scope(scope: q.Scope, *, purchases: bool = True) -> None:
     if purchases:
         for field, value in scope.product:
             title = (q.PRODUCT_LEVELS | q.APPEARANCES | q.RANK_KEYS)[field]
-            terms.append(f"{title} {value}")
+            terms.append(f"{title} {bilingual(value, field)}")
         if scope.channel is not None:
             terms.append(f"渠道编码 {scope.channel}")
     for field, value in scope.customer:
-        terms.append(f"{q.CUSTOMER_GROUPS[field]} {value}")
+        terms.append(f"{q.CUSTOMER_GROUPS[field]} {bilingual(value, field)}")
     st.caption(" · ".join(terms))
 
 
@@ -239,7 +264,7 @@ def overview(scope: q.Scope) -> None:
         dimension = st.selectbox(
             "经营分组", ("product_group_name", "product_type_name", "section_name"), format_func=q.PRODUCT_LEVELS.get,
         )
-        grouped = q.group_products(scope, dimension)
+        grouped = bilingual_columns(q.group_products(scope, dimension), category=dimension)
         bars(grouped, "category", q.PRODUCT_LEVELS[dimension], 10)
         st.caption("图表显示件数最多的 10 个分类。购买占比以当前筛选范围的件数为分母。")
         with st.expander("查看全部分类"):
@@ -302,7 +327,11 @@ def family_drilldown(scope: q.Scope, code: int) -> None:
     if groups > 1 or types > 1:
         st.warning(f"候选款式族有分类冲突，目录包含 {groups} 个商品组和 {types} 种商品类型。")
     display_table(
-        variants.sort_values(["items", "article_id"], ascending=[False, True]),
+        bilingual_columns(
+            variants.sort_values(["items", "article_id"], ascending=[False, True]),
+            prod_name="prod_name", product_group_name="product_group_name", product_type_name="product_type_name",
+            colour_group_name="colour_group_name", graphical_appearance_name="graphical_appearance_name",
+        ),
         {
             "article_id": "具体变体", "prod_name": "商品名", "product_group_name": "商品组",
             "product_type_name": "商品类型", "colour_group_name": "颜色组",
@@ -313,7 +342,11 @@ def family_drilldown(scope: q.Scope, code: int) -> None:
     if catalog["colour_group_name"].nunique() > 1 and variants["items"].sum():
         colors = variants.groupby("colour_group_name", as_index=False)["items"].sum().sort_values("items", ascending=False)
         colors["share"] = colors["items"] / colors["items"].sum()
-        display_table(colors, {"colour_group_name": "族内颜色组", "items": "购买件数", "share": "族内购买占比"}, ("share",))
+        display_table(
+            bilingual_columns(colors, colour_group_name="colour_group_name"),
+            {"colour_group_name": "族内颜色组", "items": "购买件数", "share": "族内购买占比"},
+            ("share",),
+        )
     if st.toggle("查看同款跨日再次购买"):
         with st.spinner("正在比较款式族与具体变体的不同购买日…"):
             repeated = q.family_cross_day(scope, code).copy()
@@ -345,7 +378,7 @@ def family_drilldown(scope: q.Scope, code: int) -> None:
 
 def product_hierarchy(scope: q.Scope) -> None:
     field = st.selectbox("商品经营层级", tuple(q.PRODUCT_LEVELS), format_func=q.PRODUCT_LEVELS.get)
-    products = q.group_products(scope, field)
+    products = bilingual_columns(q.group_products(scope, field), category=field)
     if no_results(products):
         return
     bars(products, "category", q.PRODUCT_LEVELS[field])
@@ -355,7 +388,7 @@ def product_hierarchy(scope: q.Scope) -> None:
         monthly["share"] = monthly["items"] / monthly.groupby("month")["items"].transform("sum")
         monthly["coverage"] = monthly["month"].map(lambda value: coverage_label(value, scope))
         display_table(
-            monthly,
+            bilingual_columns(monthly, category=field),
             {"month": "月份", "coverage": "月份覆盖", "category": q.PRODUCT_LEVELS[field], **PURCHASE_COLUMNS},
             ("share",),
         )
@@ -372,10 +405,13 @@ def appearance_page(scope: q.Scope) -> None:
         return
     category_order = matrix.groupby("category")["items"].sum().nlargest(12).index.tolist()
     appearance_order = matrix.groupby("appearance")["items"].sum().nlargest(12).index.tolist()
-    shown = matrix.loc[matrix["category"].isin(category_order) & matrix["appearance"].isin(appearance_order)]
+    shown = bilingual_columns(
+        matrix.loc[matrix["category"].isin(category_order) & matrix["appearance"].isin(appearance_order)],
+        category=level, appearance=appearance,
+    )
     chart = alt.Chart(shown).mark_rect().encode(
-        x=alt.X("category:N", title=q.PRODUCT_LEVELS[level], sort=category_order),
-        y=alt.Y("appearance:N", title=q.APPEARANCES[appearance], sort=appearance_order),
+        x=alt.X("category:N", title=q.PRODUCT_LEVELS[level], sort=[bilingual(value, level) for value in category_order]),
+        y=alt.Y("appearance:N", title=q.APPEARANCES[appearance], sort=[bilingual(value, appearance) for value in appearance_order]),
         color=alt.Color("items:Q", title="购买件数", scale=alt.Scale(scheme="redpurple")),
         tooltip=[
             alt.Tooltip("category:N", title=q.PRODUCT_LEVELS[level]),
@@ -388,7 +424,8 @@ def appearance_page(scope: q.Scope) -> None:
     st.caption("每个图轴显示购买件数最多的 12 项。下方明细保留全部类别，买家数可能跨组重叠。")
     matrix["share"] = matrix["items"] / matrix["items"].sum()
     display_table(
-        matrix, {"category": q.PRODUCT_LEVELS[level], "appearance": q.APPEARANCES[appearance], **PURCHASE_COLUMNS},
+        bilingual_columns(matrix, category=level, appearance=appearance),
+        {"category": q.PRODUCT_LEVELS[level], "appearance": q.APPEARANCES[appearance], **PURCHASE_COLUMNS},
         ("share",),
     )
 
@@ -416,7 +453,7 @@ def stages(scope: q.Scope) -> None:
     data["stage"] = data["purchase_day_no"].map(lambda value: f"第 {value} 个购买日")
     if choice:
         group_values = data["cohort"].drop_duplicates().tolist()
-        plot_group = st.selectbox("图表分组值", group_values)
+        plot_group = st.selectbox("图表分组值", group_values, format_func=lambda value: bilingual(value, choice))
         chart_data = data.loc[data["cohort"] == plot_group]
         st.caption("合格客户数为各阶段和窗口的样本分母。未知属性单列。")
     else:
@@ -435,7 +472,8 @@ def stages(scope: q.Scope) -> None:
     )
     show_chart(chart, 270)
     columns = {"cohort": q.CUSTOMER_GROUPS[choice]} if choice else {}
-    display_table(data, columns | STAGE_COLUMNS, ("repeat_rate", "no_repeat_rate"))
+    shown = bilingual_columns(data, cohort=choice) if choice else data
+    display_table(shown, columns | STAGE_COLUMNS, ("repeat_rate", "no_repeat_rate"))
     if choice:
         window_coverage = data.groupby(["purchase_day_no", "horizon_days"], as_index=False).agg(
             eligible_customers=("eligible_customers", "sum"),
@@ -520,8 +558,11 @@ def breadth(scope: q.Scope) -> None:
         data = q.customer_breadth(scope, dimension, group)
     if no_results(data):
         return
+    shown = data.round({"average_breadth": 2})
+    if group:
+        shown = bilingual_columns(shown, segment=group)
     display_table(
-        data.round({"average_breadth": 2}),
+        shown,
         {
             "segment": q.CUSTOMER_GROUPS[group] if group else "分组",
             "customer_count": "样本客户数",
@@ -576,8 +617,7 @@ def channel_mix(scope: q.Scope) -> None:
     show_overlap(q.overlap(active))
     options = q.PRODUCT_LEVELS | q.APPEARANCES | q.RANK_KEYS
     level = st.selectbox("渠道商品构成", list(options), format_func=options.get)
-    data = q.channel_composition(active, level)
-    shown = data.copy()
+    shown = bilingual_columns(q.channel_composition(active, level), category=level)
     if level == "article_id":
         shown["category"] = shown["category"].map(article_code)
     display_table(shown, {"channel": "渠道编码", "category": options[level], **PURCHASE_COLUMNS}, ("share",))
@@ -610,6 +650,7 @@ def journeys() -> None:
         """)
     if no_results(data):
         return
+    data = bilingual_columns(data, from_group="product_group_name", to_group="product_group_name")
     chart = alt.Chart(data).mark_rect().encode(
         x=alt.X("to_group:N", title="后一购买日商品组"),
         y=alt.Y("from_group:N", title="前一购买日商品组"),
@@ -647,8 +688,8 @@ def intake() -> None:
     st.dataframe(
         [
             {
-                "文件": item["file_name"],
-                "状态": item["status"],
+                "文件": f"{item['file_name']}（{SOURCE_FILE_LABELS[item['file_name']]}）",
+                "状态": f"{item['status']}（{SOURCE_STATUS_LABELS[item['status']]}）",
                 "清单字节": item["expected_bytes"],
                 "实际字节": item["actual_bytes"],
                 "路径": item["relative_path"],
@@ -662,8 +703,14 @@ def intake() -> None:
         with st.spinner("正在读取原始文件并计算 SHA-256…"):
             results = verify_files()
         st.dataframe(
-            [{"文件": item["file_name"], "校验状态": item["status"], "实际 SHA-256": item["actual_sha256"] or "—"}
-             for item in results],
+            [
+                {
+                    "文件": f"{item['file_name']}（{SOURCE_FILE_LABELS[item['file_name']]}）",
+                    "校验状态": f"{item['status']}（{SOURCE_STATUS_LABELS[item['status']]}）",
+                    "实际 SHA-256": item["actual_sha256"] or "—",
+                }
+                for item in results
+            ],
             width="stretch",
             hide_index=True,
         )

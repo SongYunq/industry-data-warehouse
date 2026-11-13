@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 
+from hm_recommendations.labels import translations
 from warehouse.config import load_settings
 from warehouse.db import connect_doris
 
@@ -20,6 +21,19 @@ def main() -> None:
     with connect_doris(settings, DATABASE) as connection, connection.cursor() as cursor:
         cursor.execute("SHOW FULL TABLES WHERE Table_type = 'VIEW'")
         existing = {next(iter(row.values())) for row in cursor.fetchall()}
+        labels = translations()
+        rows = [(field, source, zh) for (field, source), zh in labels.items()]
+        fields, sources, chinese = (
+            "[" + ", ".join(cursor.mogrify("%s", (value,)) for value in column) + "]"
+            for column in zip(*rows, strict=True)
+        )
+        views.append(f"""
+            CREATE VIEW IF NOT EXISTS v_display_labels AS
+            SELECT field_name, source_label, zh_label
+            FROM (SELECT 1 AS seed) AS input_row
+            LATERAL VIEW EXPLODE({fields}, {sources}, {chinese})
+                labels AS field_name, source_label, zh_label
+        """.strip())
         for statement in views:
             header = VIEW_HEADER.match(statement)
             if header is None:

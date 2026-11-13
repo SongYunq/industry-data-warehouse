@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from dataclasses import dataclass
 from time import sleep
@@ -35,6 +36,13 @@ JOURNEY_QUERY_HINT = (
 )
 
 
+def translated_label(source: str, translation: str) -> str:
+    return (
+        f"CASE WHEN NULLIF({translation}, '') IS NULL OR {translation} = {source} "
+        f"THEN {source} ELSE CONCAT({source}, '（', {translation}, '）') END"
+    )
+
+
 @dataclass(frozen=True)
 class Question:
     name: str
@@ -43,6 +51,7 @@ class Question:
     display: str = "table"
     dimensions: tuple[str, ...] = ()
     metrics: tuple[str, ...] = ()
+    date_columns: tuple[str, ...] = ()
 
     @property
     def variables(self) -> list[str]:
@@ -59,21 +68,32 @@ QUESTIONS = (
              "SELECT purchase_month AS 月份, item_count AS 购买件数 "
              "FROM v_monthly_overview " + MONTH_FILTER +
              "AND month_coverage = '完整月' ORDER BY purchase_month",
-             "line", ("月份",), ("购买件数",)),
+             "line", ("月份",), ("购买件数",), date_columns=("月份",)),
     Question("商品组购买构成", "v_monthly_product_group",
-             "SELECT product_group AS 商品组, SUM(item_count) AS 购买件数 "
+             f"SELECT {translated_label('ranked.product_group', 'labels.zh_label')} AS 商品组, "
+             "ranked.items AS 购买件数 "
+             "FROM (SELECT product_group, SUM(item_count) AS items "
              "FROM v_monthly_product_group " + MONTH_FILTER + CHANNEL_FILTER +
-             " GROUP BY product_group ORDER BY 购买件数 DESC LIMIT 20",
+             " GROUP BY product_group ORDER BY items DESC, product_group LIMIT 20) ranked "
+             "LEFT JOIN v_display_labels labels ON labels.field_name = 'product_group_name' "
+             "AND labels.source_label = ranked.product_group "
+             "ORDER BY ranked.items DESC, ranked.product_group",
              "bar", ("商品组",), ("购买件数",)),
     Question("颜色组购买构成", "v_monthly_colour_group",
-             "SELECT colour_group AS 颜色组, SUM(item_count) AS 购买件数 "
+             f"SELECT {translated_label('ranked.colour_group', 'labels.zh_label')} AS 颜色组, "
+             "ranked.items AS 购买件数 "
+             "FROM (SELECT colour_group, SUM(item_count) AS items "
              "FROM v_monthly_colour_group " + MONTH_FILTER + CHANNEL_FILTER +
-             " GROUP BY colour_group ORDER BY 购买件数 DESC LIMIT 20",
+             " GROUP BY colour_group ORDER BY items DESC, colour_group LIMIT 20) ranked "
+             "LEFT JOIN v_display_labels labels ON labels.field_name = 'colour_group_name' "
+             "AND labels.source_label = ranked.colour_group "
+             "ORDER BY ranked.items DESC, ranked.colour_group",
              "bar", ("颜色组",), ("购买件数",)),
     Question("月度商品和客户概况", "v_monthly_overview",
              "SELECT purchase_month AS 月份, month_coverage AS 月份覆盖, item_count AS 购买件数, "
              "customer_count AS 购买客户数, style_count AS 候选款式族数, variant_count AS 变体数 "
-             "FROM v_monthly_overview " + MONTH_FILTER + " ORDER BY purchase_month"),
+             "FROM v_monthly_overview " + MONTH_FILTER + " ORDER BY purchase_month",
+             date_columns=("月份",)),
     Question("客户第 N 个购买日后回购", "v_repurchase_stage",
              "SELECT purchase_day_no AS 购买日序号, horizon_days AS 观察窗天数, "
              "eligible_customers AS 合格客户数, repeat_customers AS 再次购买客户数, "
@@ -86,7 +106,8 @@ QUESTIONS = (
              "eligible_customers AS 合格客户数, repeat_customers AS 再次购买客户数, "
              "ROUND(100 * repeat_rate, 2) AS 再次购买日百分比 "
              "FROM v_first_month_repurchase WHERE 1 = 1 " + HORIZON_FILTER +
-             " ORDER BY first_month, horizon_days"),
+             " ORDER BY first_month, horizon_days",
+             date_columns=("首现月份",)),
     Question("历史近期性与购买频次", "v_customer_frequency_recency",
              "SELECT recency_band AS 距截止日天数, frequency_band AS 不同购买日数, "
              "customer_count AS 客户数, item_count AS 购买件数 "
@@ -95,7 +116,8 @@ QUESTIONS = (
              "SELECT purchase_month AS 月份, sales_channel_id AS 渠道编码, "
              "item_count AS 购买件数, customer_count AS 购买客户数 "
              "FROM v_monthly_channel " + MONTH_FILTER + CHANNEL_FILTER +
-             " ORDER BY purchase_month, sales_channel_id"),
+             " ORDER BY purchase_month, sales_channel_id",
+             date_columns=("月份",)),
     Question("单编码与多编码购买客户", "v_channel_overlap",
              "SELECT channel_group AS 客户渠道组, customer_count AS 客户数, "
              "item_count AS 购买件数 FROM v_channel_overlap ORDER BY channel_group"),
@@ -106,8 +128,16 @@ QUESTIONS = (
              "SELECT channel_group AS 购买日渠道组, day_count AS 购买日数 "
              "FROM v_channel_day_profile ORDER BY channel_group"),
     Question("跨购买日商品组变化", "v_category_journey",
-             "SELECT from_group AS 前日商品组, to_group AS 后日商品组, pair_count AS 日期对数 "
-             "FROM v_category_journey ORDER BY pair_count DESC, from_group, to_group LIMIT 30"),
+             f"SELECT {translated_label('ranked.from_group', 'previous_label.zh_label')} AS 前日商品组, "
+             f"{translated_label('ranked.to_group', 'next_label.zh_label')} AS 后日商品组, "
+             "ranked.pair_count AS 日期对数 "
+             "FROM (SELECT from_group, to_group, pair_count FROM v_category_journey "
+             "ORDER BY pair_count DESC, from_group, to_group LIMIT 30) ranked "
+             "LEFT JOIN v_display_labels previous_label ON previous_label.field_name = 'product_group_name' "
+             "AND previous_label.source_label = ranked.from_group "
+             "LEFT JOIN v_display_labels next_label ON next_label.field_name = 'product_group_name' "
+             "AND next_label.source_label = ranked.to_group "
+             "ORDER BY ranked.pair_count DESC, ranked.from_group, ranked.to_group"),
 )
 
 
@@ -132,10 +162,18 @@ def save_question(client: httpx.Client, question: Question, database_id: int,
               "type": MONTH_PARAMETERS[key][1], "required": False}
         for key in question.variables
     }
-    visualization = {}
+    visualization: dict = {}
     if question.dimensions:
         visualization = {"graph.dimensions": list(question.dimensions),
                          "graph.metrics": list(question.metrics)}
+    if question.date_columns:
+        visualization["column_settings"] = {
+            json.dumps(["name", column], ensure_ascii=False, separators=(",", ":")): {
+                "date_style": "YYYY/M/D",
+                "date_separator": "-",
+            }
+            for column in question.date_columns
+        }
     payload = {
         "name": question.name,
         "type": "question",

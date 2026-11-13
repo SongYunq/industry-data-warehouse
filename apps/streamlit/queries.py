@@ -25,8 +25,8 @@ PRODUCT_LEVELS = {
     "product_group_name": "商品组",
     "product_type_name": "商品类型",
     "garment_group_name": "服装组",
-    "index_group_name": "Index Group",
-    "index_name": "Index",
+    "index_group_name": "经营大组（Index Group）",
+    "index_name": "经营分类（Index）",
     "department_name": "部门",
     "section_name": "版块",
 }

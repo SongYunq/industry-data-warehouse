@@ -11,6 +11,7 @@ GRANT SELECT_PRIV ON internal.hm_retail_dw.v_channel_overlap TO 'hm_metabase'@'1
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_channel_switch TO 'hm_metabase'@'172.30.0.13';
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_channel_day_profile TO 'hm_metabase'@'172.30.0.13';
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_category_journey TO 'hm_metabase'@'172.30.0.13';
+GRANT SELECT_PRIV ON internal.hm_retail_dw.v_display_labels TO 'hm_metabase'@'172.30.0.13';
 
 CREATE WORKLOAD GROUP IF NOT EXISTS hm_dashboard PROPERTIES (
     "max_concurrency" = "1",
