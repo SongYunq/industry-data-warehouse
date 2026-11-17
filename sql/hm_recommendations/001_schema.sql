@@ -7,7 +7,7 @@ USE hm_retail_dw;
 CREATE TABLE IF NOT EXISTS dim_customer
 (
     customer_id             VARCHAR(64) NOT NULL COMMENT "源客户伪名键",
-    fn_source_flag          VARCHAR(8) NULL COMMENT "源 FN 标记，空值保持未知",
+    fn_source_flag          VARCHAR(8) NULL COMMENT "源 FN 标记，空值保持未知，业务分析舍弃",
     active_source_flag      VARCHAR(8) NULL COMMENT "源 Active 标记，空值保持未知",
     club_member_status      VARCHAR(32) NULL COMMENT "客户属性快照中的会员状态",
     fashion_news_frequency  VARCHAR(32) NULL COMMENT "客户属性快照中的资讯频率",
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS fact_purchase_item
     t_dat             DATE NOT NULL COMMENT "商品购买发生日期",
     customer_id       VARCHAR(64) NOT NULL COMMENT "客户维度键",
     article_id        INT NOT NULL COMMENT "商品款式维度键",
-    sales_channel_id  TINYINT NOT NULL COMMENT "源渠道编码，业务标签待核实",
+    sales_channel_id  TINYINT NOT NULL COMMENT "源渠道编码，项目口径：1=线下、2=线上",
     source_price_value DOUBLE NOT NULL COMMENT "源 price 数值；非货币口径"
 )
 DUPLICATE KEY(t_dat, customer_id, article_id)

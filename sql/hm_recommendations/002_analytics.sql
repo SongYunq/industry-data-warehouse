@@ -219,3 +219,36 @@ SELECT CAST(DATE_TRUNC(t_dat, 'month') AS DATE) AS purchase_month, sales_channel
        COUNT(*) AS item_count, COUNT(DISTINCT customer_id) AS customer_count
 FROM fact_purchase_item
 GROUP BY purchase_month, sales_channel_id;
+
+CREATE VIEW IF NOT EXISTS v_article_description_term AS
+WITH clauses AS (
+    SELECT article_id, clause
+    FROM dim_article
+    LATERAL VIEW EXPLODE(SPLIT_BY_REGEXP(LOWER(detail_desc), "[^a-z[:space:]'’-]+"))
+        segments AS clause
+    WHERE detail_desc IS NOT NULL
+), tokenized AS (
+    SELECT article_id, SPLIT_BY_STRING(TRIM(REGEXP_REPLACE(clause, '[^a-z]+', ' ')), ' ') AS words
+    FROM clauses
+), positions AS (
+    SELECT article_id, words, start_at, span
+    FROM tokenized
+    LATERAL VIEW EXPLODE(ARRAY_RANGE(1, CAST(SIZE(words) + 1 AS INT))) starts AS start_at
+    LATERAL VIEW EXPLODE([1, 2, 3]) widths AS span
+    WHERE start_at + span - 1 <= SIZE(words)
+), boundaries AS (
+    SELECT article_id, words, start_at, span, ELEMENT_AT(words, start_at) AS first_word,
+           ELEMENT_AT(words, start_at + span - 1) AS last_word,
+           ['a', 'an', 'and', 'are', 'as', 'at', 'be', 'been', 'being', 'but', 'by', 'can', 'could',
+            'did', 'do', 'does', 'for', 'from', 'had', 'has', 'have', 'he', 'her', 'here', 'hers',
+            'him', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'may', 'me', 'might',
+            'my', 'nor', 'of', 'on', 'onto', 'or', 'our', 'ours', 'she', 'should', 'so', 'than', 'that',
+            'the', 'their', 'theirs', 'them', 'then', 'there', 'these', 'they', 'this', 'those', 'through',
+            'to', 'too', 'up', 'upon', 'us', 'was', 'we', 'were', 'what', 'when', 'where', 'which',
+            'while', 'who', 'whom', 'will', 'with', 'would', 'you', 'your'] AS stop_words
+    FROM positions
+)
+SELECT DISTINCT article_id, ARRAY_JOIN(ARRAY_SLICE(words, start_at, span), ' ') AS term
+FROM boundaries
+WHERE first_word <> '' AND NOT ARRAY_CONTAINS(stop_words, first_word)
+  AND NOT ARRAY_CONTAINS(stop_words, last_word);

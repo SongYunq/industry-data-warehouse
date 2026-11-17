@@ -430,16 +430,45 @@ def appearance_page(scope: q.Scope) -> None:
     )
 
 
+def description_terms(scope: q.Scope) -> None:
+    with st.spinner("正在从 Doris 读取商品描述词条排行…"):
+        ranking = q.description_terms(scope)
+    if no_results(ranking):
+        return
+    st.caption("购买件数按当前筛选汇总。命中目录变体数按商品筛选统计，含未购买商品。不同词条的购买件数可能重叠。")
+    search = st.text_input("查找词条", placeholder="例如 high waist").strip()
+    shown = ranking.loc[ranking["term"].str.contains(search, case=False, regex=False)] if search else ranking
+    if no_results(shown):
+        return
+    top = shown.loc[shown["items"] > 0].head(15)
+    if not top.empty:
+        chart = alt.Chart(top).mark_bar(color=ACCENT, cornerRadiusEnd=3).encode(
+            x=alt.X("items:Q", title="购买件数"),
+            y=alt.Y("term:N", title="词条", sort=top["term"].tolist(), axis=alt.Axis(labelLimit=230)),
+            tooltip=[
+                alt.Tooltip("term:N", title="词条"),
+                alt.Tooltip("items:Q", title="购买件数", format=","),
+                alt.Tooltip("variants:Q", title="命中目录变体数", format=","),
+            ],
+        )
+        show_chart(chart, max(90, 22 * len(top)))
+    display_table(shown, {"term_rank": "排名", "term": "词条", "items": "购买件数", "variants": "命中目录变体数"})
+
+
 def product(scope: q.Scope) -> None:
     st.header("商品组合")
     show_scope(scope)
-    tab = st.segmented_control("商品分析方式", ("分类层级", "款式族与变体", "颜色与图案"), default="分类层级")
+    tab = st.segmented_control(
+        "商品分析方式", ("分类层级", "款式族与变体", "颜色与图案", "描述词条"), default="分类层级",
+    )
     if tab == "分类层级":
         product_hierarchy(scope)
     elif tab == "款式族与变体":
         families(scope)
     elif tab == "颜色与图案":
         appearance_page(scope)
+    elif tab == "描述词条":
+        description_terms(scope)
 
 
 def stages(scope: q.Scope) -> None:

@@ -117,26 +117,30 @@ class Scope:
         conditions, values = self.customer_conditions()
         return f"{date_field} BETWEEN %s AND %s{conditions}", (self.start, self.end, *values)
 
-    def purchases(self, *conditions: str, customer_dimension: bool = False) -> tuple[str, tuple]:
-        anchor, params = self.predicates("p.t_dat")
-        extra = []
-        values = list(params)
+    def product_conditions(self) -> tuple[list[str], tuple]:
+        conditions = []
+        values = []
         for field, value in self.product:
             if field in RANK_KEYS:
-                extra.append(f"p.{field} = %s")
+                conditions.append(f"p.{field} = %s")
                 values.append(int(value))
             else:
                 if field not in PRODUCT_LEVELS and field not in APPEARANCES:
                     raise ValueError("未知商品筛选字段")
-                extra.append(f"{label(field)} = %s")
+                conditions.append(f"{label(field)} = %s")
                 values.append(value)
+        return conditions, tuple(values)
+
+    def purchases(self, *conditions: str, customer_dimension: bool = False) -> tuple[str, tuple]:
+        anchor, params = self.predicates("p.t_dat")
+        extra, product_values = self.product_conditions()
         if self.channel is not None:
             extra.append("p.sales_channel_id = %s")
-            values.append(self.channel)
+            product_values += (self.channel,)
         table = "FROM v_purchase_detail p"
         if self.customer or customer_dimension:
             table += " JOIN dim_customer c ON p.customer_id = c.customer_id"
-        return table + " WHERE " + " AND ".join((anchor, *extra, *conditions)), tuple(values)
+        return table + " WHERE " + " AND ".join((anchor, *extra, *conditions)), (*params, *product_values)
 
 
 def options(field: str) -> list[str]:
@@ -149,6 +153,29 @@ def options(field: str) -> list[str]:
     else:
         raise ValueError("未知筛选字段")
     return read(f"SELECT DISTINCT {expression} AS value FROM {source} ORDER BY value")["value"].tolist()
+
+
+def description_terms(scope: Scope) -> pd.DataFrame:
+    source, params = scope.purchases()
+    catalog_conditions, catalog_params = scope.product_conditions()
+    catalog_where = "WHERE " + " AND ".join(catalog_conditions) if catalog_conditions else ""
+    return read(f"""
+        WITH purchases AS (
+            SELECT p.article_id, COUNT(*) AS items
+            {source}
+            GROUP BY p.article_id
+        ), totals AS (
+            SELECT t.term, COALESCE(SUM(b.items), 0) AS items, COUNT(*) AS variants
+            FROM v_article_description_term t
+            JOIN dim_article p ON p.article_id = t.article_id
+            LEFT JOIN purchases b ON b.article_id = t.article_id
+            {catalog_where}
+            GROUP BY t.term
+        )
+        SELECT ROW_NUMBER() OVER (ORDER BY items DESC, term) AS term_rank, term, items, variants
+        FROM totals
+        ORDER BY term_rank
+    """, (*params, *catalog_params))
 
 
 def totals(scope: Scope) -> pd.Series:
