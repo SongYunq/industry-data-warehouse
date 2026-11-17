@@ -4,7 +4,7 @@
 
 ## 当前范围
 
-当前数据源为 Kaggle H&M Personalized Fashion Recommendations 竞赛数据。三张核心 CSV 已完成下载、SHA-256、结构和质量盘点。当前看板以商品分类、款式排行、颜色、图案和描述词为主，客户复购和线上线下对比为辅。项目统一规定渠道 1=线下、2=线上并保留源码；`FN` 从业务分析中舍弃，资讯频率仅按源分类值描述，`Active` 不作为客户状态指标。W05 概念和 W06 逻辑模型已同步扩展，并已补齐概念关系、事实维度、字段血缘、物理分区和数据处理流程图；Doris 实机已创建 4 张表、装载 25 个自然月分区并验证单月重载。本阶段使用 Streamlit 查询 Doris 并展示 H&M 分析。
+当前数据源为 Kaggle H&M Personalized Fashion Recommendations 竞赛数据。三张核心 CSV 已完成下载、SHA-256、结构和质量盘点。当前看板以商品分类、款式排行、颜色、图案和描述词为主，客户复购和线上线下对比为辅。项目统一规定渠道 1=线下、2=线上并保留源码；`FN` 从业务分析中舍弃，资讯频率仅按源分类值描述，`Active` 不作为客户状态指标。W05 概念和 W06 逻辑模型已同步扩展，并已补齐概念关系、事实维度、字段血缘、物理分区和数据处理流程图；Doris 实机已创建 DWD 明细表、装载 25 个自然月分区并验证单月重载，DWS 与 ADS 汇总表由 `analytics-install` 覆盖写入。本阶段使用 Streamlit 查询 Doris 并展示 H&M 分析。
 
 本阶段的运行栈为 Pixi、Python、Apache Doris、Streamlit 和 Docker Compose。Metabase 正式接入列为下一阶段任务，状态为待实现，PostgreSQL 随 Metabase 启用。Airbnb 香港试点文件、代码、SQL、文档和证据已归档；据历史试点记录，Doris 的 `hk_airbnb_pilot` 曾有 10 张表并部分装载首期数据。本轮确认 Doris FE/BE 存活、5 个数据卷仍存在，历史库仍有 10 张表。详细状态见 [工作内容与进度](00-工作内容与进度.md)。
 
@@ -17,8 +17,8 @@
 | [02-需求分析](02-需求分析.md) | 业务问题、使用者、范围、指标口径和验收需求 | 商品／品类为主，回购和渠道为辅；按商品类型及全体商品统计描述词条购买件数 |
 | [03-数据来源与数据字典](03-数据来源与数据字典.md) | 来源、字段、数据范围、质量概况和限制 | 记录源字段说明、项目渠道口径及客户分析字段范围 |
 | [04-概念设计](04-概念设计.md) | 业务过程、业务对象及其关系 | 含客户、购买记录、商品变体、款式族候选与购买日序列的概念关系图 |
-| [05-逻辑设计](05-逻辑设计.md) | 数据粒度、事实与维度、键及历史处理策略 | 含事实表与维度关系图、源字段至分析视图的指标血缘图 |
-| [06-物理设计](06-物理设计.md) | Doris 表结构、字段类型、分区和物理优化 | 含 4 张实表、25 个交易月分区和 bucket 分布图 |
+| [05-逻辑设计](05-逻辑设计.md) | 数据粒度、事实与维度、键及历史处理策略 | 含事实表与维度关系图、ODS 至 ADS 的指标血缘图 |
+| [06-物理设计](06-物理设计.md) | Doris 表结构、字段类型、分区和物理优化 | 含 DWD 明细表、DWS／ADS 汇总表、25 个交易月分区和 bucket 分布图 |
 | [07-数据处理设计](07-数据处理设计.md) | 获取、加载、转换、质量检查和失败处理 | 含端到端分层数据流图和装载发布流程图；全量装载与单月重载通过 |
 | [08-分析与可视化设计](08-分析与可视化设计.md) | 分析主题、展示端职责、图表与交互 | Streamlit 使用一级菜单，已核对复购截止日；Metabase 下一阶段待实现 |
 | [09-测试与验收](09-测试与验收.md) | 测试计划、用例、证据、问题和验收结果 | W11 未开始 |
@@ -30,10 +30,10 @@
 
 ## 代码与数据入口
 
-- `src/hm_recommendations/`：H&M 文件获取、核验、结构盘点、入仓和分析视图安装，另含供下一阶段参考的 Metabase 原型发布脚本。
+- `src/hm_recommendations/`：H&M 文件获取、核验、结构盘点、入仓和 DWS／ADS 刷新，另含供下一阶段参考的 Metabase 原型发布脚本。
 - `apps/streamlit/app.py`：商品、客户和渠道分析看板，含原始文件接入页。
 - `src/warehouse/`：Doris、Metabase 与 PostgreSQL 共享服务管理代码。
-- [Doris 建表脚本](../sql/hm_recommendations/001_schema.sql)、[分析视图](../sql/hm_recommendations/002_analytics.sql)、[Metabase 只读授权](../sql/hm_recommendations/003_metabase_reader_grants.sql)。
+- [Doris 明细建表脚本](../sql/hm_recommendations/001_schema.sql)、[DWS／ADS 刷新脚本](../sql/hm_recommendations/002_analytics.sql)、[Metabase 只读授权](../sql/hm_recommendations/003_metabase_reader_grants.sql)。
 - `data/raw/hm_recommendations/`：H&M 原始文件，已下载并由 Git 忽略。
 - `data/archive/inside_airbnb/`：保留的 Airbnb 历史原始文件，由 Git 忽略。
 - `archive/inside_airbnb/` 与 [Airbnb 归档资料](archive/inside_airbnb/README.md)：旧数据源专属代码、SQL、设计和盘点证据。

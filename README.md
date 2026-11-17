@@ -18,7 +18,7 @@ W13 已形成汇报 PPT 初稿，材料入口、报告章节和录屏彩排路�
 - `pixi run data-check`：核对文件字节数和 SHA-256。
 - `pixi run data-inspect`：盘点字段、记录数、日期范围和异常行。
 - `pixi run data-load`：建表并全量装载 H&M。
-- `pixi run analytics-install`：安装 Doris 分析视图。
+- `pixi run analytics-install`：写入 Doris 的 DWS、ADS 汇总表，并更新读取视图。
 - `pixi run dashboard`：启动 Streamlit 分析看板。
 - `docker compose --env-file .env -f deploy/compose.yaml up -d doris-fe doris-be`：启动本阶段所需的 Doris 容器。
 - `pixi run services-status`：查看容器和 Doris 节点状态。

@@ -1,5 +1,6 @@
--- Run as a Doris administrator after installing the analytics views
--- and creating the dedicated user for the Metabase container.
+-- Run as a Doris administrator after analytics-install
+-- and after creating the dedicated user for the Metabase container.
+-- Grants stay on the v_* read views. Do not grant the customer-level DWS tables.
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_monthly_overview TO 'hm_metabase'@'172.30.0.13';
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_monthly_product_group TO 'hm_metabase'@'172.30.0.13';
 GRANT SELECT_PRIV ON internal.hm_retail_dw.v_monthly_colour_group TO 'hm_metabase'@'172.30.0.13';
